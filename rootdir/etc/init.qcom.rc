@@ -510,14 +510,8 @@ service ptt_socket_app /system/bin/ptt_socket_app
     group system
     oneshot
 
-# class main, so the daemon runs when mediaserver's CameraService opens each
-# HAL1 camera to probe its flash (CameraFlashlight::findFlashUnits, called
-# from CameraService::onFirstRef). The kernel's camera_v4l2_open posts
-# MSM_CAMERA_NEW_SESSION to the daemon and waits MSM_POST_EVT_TIMEOUT
-# (5000 ms); a late_start daemon starts after /data mounts, so each probe
-# open times out, and M keeps the resulting no-flash verdict for the boot.
 service qcamerasvr /system/bin/mm-qcamera-daemon
-    class main
+    class late_start
     user camera
     group camera system inet input graphics
 
