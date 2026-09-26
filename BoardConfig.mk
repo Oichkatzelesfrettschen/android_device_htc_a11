@@ -85,7 +85,15 @@ EXTENDED_FONT_FOOTPRINT := true
 TARGET_USES_ION := true
 TARGET_USES_C2D_COMPOSITION := true
 USE_OPENGL_RENDERER := true
-OVERRIDE_RS_DRIVER := libRSDriver_adreno.so
+# libRSDriver_adreno.so (vendor/htc/a11/proprietary) fails bionic's
+# load-time symbol binding against this platform's libbcc/GraphicBufferMapper
+# ABI (unresolved bcc::ObjectLoader::getSymbolAddress,
+# RsdCpuReference::create, GraphicBufferMapper::lock's 4-arg KitKat
+# signature): no msm8226 vendor ever built this blob for a post-L RS ABI, so
+# selecting it here only adds a load-time fault to every RS-using process.
+# RenderScript falls back to libRSCpuRef (CPU) unselected; see
+# notes/MSM8226_MULTIMEDIA_COMPUTE.md in the workbench for the load-closure
+# evidence.
 BOARD_EGL_CFG := device/htc/a11/configs/egl.cfg
 
 # Includes
