@@ -40,25 +40,47 @@ on init
     mkdir /persist 0771 system system
 
     # See storage config details at http://source.android.com/devices/tech/storage/
-    mkdir /mnt/shell/emulated 0700 shell shell
-    mkdir /storage/emulated 0555 root root
-
+    # 6.0's own /storage is populated by the "on post-fs" bind mount of
+    # /mnt/runtime/default (system/core/rootdir/init.rc:263), which shadows
+    # anything mkdir'd here under /storage before zygote (a class-main
+    # service, started well after post-fs) ever sees it. EXTERNAL_STORAGE is
+    # already exported correctly by system/core/rootdir/init.environ.rc.in
+    # (EXTERNAL_STORAGE=/sdcard, read live by
+    # Environment.getLegacyExternalStorageDirectory(),
+    # frameworks/base/core/java/android/os/Environment.java:356); this file's
+    # own "on init" runs after init.environ.rc's (init.rc:7,9), so its
+    # EXTERNAL_STORAGE=/storage/emulated/legacy re-export overrode the correct
+    # M value with a KitKat FUSE path that dangles: no init.rc file in this
+    # tree starts a `sdcard` FUSE daemon to populate /mnt/shell/emulated/0, the
+    # far end of the symlink chain below. EMULATED_STORAGE_SOURCE/TARGET feed
+    # only art/runtime/runtime.cc:611-622's Runtime::InitZygote(), which under
+    # M devices that never export EMULATED_STORAGE_TARGET simply skips that
+    # legacy tmpfs mount (target_base stays null); on this device the export
+    # makes zygote take that branch and fail every restart, since the
+    # mountpoint's own directory is the /storage one already shadowed above.
+    # Dropping all three exports removes the entire dead KitKat storage path;
+    # /storage/self/primary -> /sdcard (init.rc:88) plus the "on post-fs" bind
+    # mount are 6.0's only storage setup, and neither reads any of these vars.
     mkdir /mnt/media_rw/sdcard1 0700 media_rw media_rw
     mkdir /storage/sdcard1 0700 root root
 
     mkdir /mnt/media_rw/usbdisk 0700 media_rw media_rw
     mkdir /storage/usbdisk 0700 root root
 
-    export EXTERNAL_STORAGE /storage/emulated/legacy
-    export EMULATED_STORAGE_SOURCE /mnt/shell/emulated
-    export EMULATED_STORAGE_TARGET /storage/emulated
+    # SECONDARY_STORAGE stays: frameworks/base's MediaStore.java:1405 still
+    # reads it on 6.0 (EXTERNAL_PATHS's static initializer), and
+    # /storage/sdcard1 is a real, vold-managed volume
+    # (voldmanaged=sdcard1:auto, rootdir/etc/fstab.qcom) whose live behavior on
+    # this device is untested (no card on hand). /storage/usbdisk carries no
+    # matching fstab entry (OTG is untested for the same reason) but is left
+    # with it: neither half is implicated in the zygote fault.
     export SECONDARY_STORAGE /storage/sdcard1:/storage/usbdisk
 
-    # Support legacy paths
-    symlink /storage/emulated/legacy /sdcard
-    symlink /storage/emulated/legacy /mnt/sdcard
-    symlink /storage/emulated/legacy /storage/sdcard0
-    symlink /mnt/shell/emulated/0 /storage/emulated/legacy
+    # Compatibility symlinks for the real, vold-managed removable volumes
+    # (SECONDARY_STORAGE above); vold creates its own /mnt/media_rw and
+    # /storage mount points at insertion time (system/vold/VolumeManager.cpp),
+    # so these are pre-existing convenience paths for legacy hardcoded
+    # /external_sd-style consumers, not this device's storage mechanism.
     symlink /storage/sdcard1 /external_sd
     symlink /storage/sdcard1 /mnt/external_sd
     symlink /storage/usbdisk /usbdisk
