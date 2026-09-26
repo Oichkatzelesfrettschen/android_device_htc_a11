@@ -99,6 +99,19 @@
             <Quirk name="requires-allocate-on-output-ports" />
             <Quirk name="defers-output-buffer-allocation" />
         </MediaCodec>
+        <!-- Venus vdec_formats[] (msm_vdec.c) carries V4L2_PIX_FMT_HEVC_HYBRID:
+             a hardware-assisted, not fully native, decode path, matching the
+             blob's own "hevchybrid" component and HEVC_Utils naming.
+             libOmxVdecHevc.so's NEEDED closure needed libmmosal.so, absent
+             from this device's own stock image; sourced from a donor
+             msm8226 firmware (manifests/cm13-a11chl-blob-sources.tsv),
+             symbol-closure verified against libHevcSwDecoder.so's undefined
+             MM_* imports before adding this entry. -->
+        <MediaCodec name="OMX.qcom.video.decoder.hevchybrid" type="video/hevc" >
+            <Quirk name="requires-allocate-on-input-ports" />
+            <Quirk name="requires-allocate-on-output-ports" />
+            <Quirk name="defers-output-buffer-allocation" />
+        </MediaCodec>
         <MediaCodec name="OMX.qcom.video.decoder.divx" type="video/divx" >
             <Quirk name="requires-allocate-on-input-ports" />
             <Quirk name="requires-allocate-on-output-ports" />
