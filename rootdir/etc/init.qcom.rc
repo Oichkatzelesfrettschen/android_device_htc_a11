@@ -76,6 +76,21 @@ on init
     # with it: neither half is implicated in the zygote fault.
     export SECONDARY_STORAGE /storage/sdcard1:/storage/usbdisk
 
+    # Per-library shims for the stock KitKat blobs. bionic's linker
+    # (parse_LD_SHIM_LIBS, shim_libs_for_each in linker.cpp) reads
+    # REALPATH|SHIM pairs from this variable and adds SHIM to the load group
+    # of the library whose resolved path starts with REALPATH, so a shim
+    # loads only in a process that loads its library. REALPATH is the
+    # resolved absolute path: /vendor/lib resolves to /system/vendor/lib.
+    #   camera.vendor.msm8226.so, libcameraface.so -> libshim_a11_camera.so:
+    #     the KitKat SensorManager entry points (Singleton<SensorManager>
+    #     sLock/sInstance, SensorManager(), createEventQueue()) M's libgui
+    #     dropped.
+    #   libmmqjpeg_codec.so -> libshim_a11_jpeg.so: EVP_Seal*/EVP_Open*,
+    #     which BoringSSL dropped; the camera HAL's hardware JPEG encoder
+    #     (libmmjpeg_interface -> libqomx_core -> libqomx_jpegenc) needs it.
+    export LD_SHIM_LIBS /system/lib/hw/camera.vendor.msm8226.so|libshim_a11_camera.so:/system/vendor/lib/libcameraface.so|libshim_a11_camera.so:/system/vendor/lib/libmmqjpeg_codec.so|libshim_a11_jpeg.so
+
     # Compatibility symlinks for the real, vold-managed removable volumes
     # (SECONDARY_STORAGE above); vold creates its own /mnt/media_rw and
     # /storage mount points at insertion time (system/vold/VolumeManager.cpp),
@@ -495,8 +510,14 @@ service ptt_socket_app /system/bin/ptt_socket_app
     group system
     oneshot
 
+# class main, so the daemon runs when mediaserver's CameraService opens each
+# HAL1 camera to probe its flash (CameraFlashlight::findFlashUnits, called
+# from CameraService::onFirstRef). The kernel's camera_v4l2_open posts
+# MSM_CAMERA_NEW_SESSION to the daemon and waits MSM_POST_EVT_TIMEOUT
+# (5000 ms); a late_start daemon starts after /data mounts, so each probe
+# open times out, and M keeps the resulting no-flash verdict for the boot.
 service qcamerasvr /system/bin/mm-qcamera-daemon
-    class late_start
+    class main
     user camera
     group camera system inet input graphics
 

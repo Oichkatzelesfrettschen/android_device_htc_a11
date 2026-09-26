@@ -3,3 +3,9 @@ allow mm-qcamerad camera_socket:sock_file { create unlink write };
 # allow mm-qcamerad default_prop:property_service set;
 allow mm-qcamerad init:unix_stream_socket connectto;
 allow mm-qcamerad property_socket:sock_file write;
+
+# libmmcamera_faceproc.so, which the daemon loads, carries DT_TEXTREL; the
+# linker's relocation pass mprotects its text writable, which is execmod on
+# system_file (external/sepolicy domain.te exempts system_file from the
+# execmod neverallow).
+allow mm-qcamerad system_file:file execmod;
