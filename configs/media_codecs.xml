@@ -62,7 +62,7 @@
     </Encoders>
     <Decoders>
         <!-- Audio Hardware  -->
-        <!-- Four vendor aDSP audio decoders the stock 1.42.652.1
+        <!-- Four of five vendor aDSP audio decoders the stock 1.42.652.1
              media_codecs.xml wires identically; this device tree's default
              config carried the libraries' Encoders (qcelp13/evrc) but never
              registered these Decoders, so WMA, AMR-WB+, QCELP13 and EVRC
@@ -84,6 +84,15 @@
         <MediaCodec name="OMX.qcom.audio.decoder.evrc" type="audio/evrc" >
             <Quirk name="requires-global-flush" />
         </MediaCodec>
+        <!-- Hardware AAC decode: libOmxCore.so's registry maps
+             OMX.qcom.audio.decoder.aac to libOmxAacDec.so, and the blob is
+             in the stock image, but stock's own media_codecs.xml never
+             registered it (AAC playback went through OMX.google.aac.decoder
+             instead), so there is no stock Quirk-set precedent to copy,
+             unlike the other four decoders above. Registered with no Quirks
+             ahead of the software fallback; the device window's live decode
+             test settles whether one is needed. -->
+        <MediaCodec name="OMX.qcom.audio.decoder.aac" type="audio/mp4a-latm" />
         <!-- Audio Software  -->
         <MediaCodec name="OMX.google.vorbis.decoder" type="audio/vorbis" />
         <MediaCodec name="OMX.google.gsm.decoder" type="audio/gsm" />
