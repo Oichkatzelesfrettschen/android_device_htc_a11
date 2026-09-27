@@ -318,15 +318,29 @@ on boot
     # Our blobs expect the diag node to be called /dev/diag
     symlink /dev/htc_diag /dev/diag
 
-    # libOmxVdecHevc.so (registered as OMX.qcom.video.decoder.hevchybrid)
-    # hardcodes /dev/video/q6_dec: this kernel's msm-vidc driver
-    # (CONFIG_MSM_VIDC_V4L2=y) registers as a standard V4L2 /dev/videoN
-    # device instead, at video32 (VIDIOC_QUERYCAP: driver=msm_vidc_driver
-    # card=msm_vdec_8974). The msm8226-selected decoder
-    # (omx_vdec_msm8974.cpp, vdec.mk) already opens /dev/video32 directly
-    # and needs no symlink; only the HEVC hybrid library's fixed path does.
+    # msm8226.dtsi carries two qcom,msm-vidc cores: one MMIO-backed
+    # (reg = <0xfdc00000 ...>, qcom,hfi = "venus") and one queue-only
+    # core with no reg property (qcom,hfi = "q6", qcom,max-hw-load =
+    # <108000>, i.e. 720p30), whose HFI commands run over the ADSP
+    # shared-memory queue instead of a dedicated decode block. The
+    # venus core has no HEVC support at this IP generation; the q6
+    # core is the DSP-assisted decode path libOmxVdecHevc.so targets
+    # (registered OMX.qcom.video.decoder.hevchybrid).
+    # msm_v4l2_vidc_probe() (msm_v4l2_vidc.c) assigns V4L2 minors by
+    # core id, not probe order: BASE_DEVICE_NUMBER (32) for the venus
+    # core's decoder/encoder pair (32/33), and
+    # BASE_DEVICE_NUMBER + MSM_VIDC_MAX_DEVICES (34) for the q6 pair
+    # (34/35) -- msm_vidc_link_name_show() reports these as venus_dec,
+    # venus_enc, q6_dec, q6_enc respectively. libOmxVdecHevc.so opens
+    # /dev/video/q6_dec by that fixed name, so the symlink must resolve
+    # to the q6 core's decoder node (video34), not the venus core's
+    # (video32); the encoder pair and the venus pair get the matching
+    # names for any caller that opens by link_name instead of by minor.
     mkdir /dev/video 0755 root root
-    symlink /dev/video32 /dev/video/q6_dec
+    symlink /dev/video34 /dev/video/q6_dec
+    symlink /dev/video35 /dev/video/q6_enc
+    symlink /dev/video32 /dev/video/venus_dec
+    symlink /dev/video33 /dev/video/venus_enc
 
     #To allow interfaces to get v6 address when tethering is enabled
     write /proc/sys/net/ipv6/conf/rmnet0/accept_ra 2
