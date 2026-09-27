@@ -95,7 +95,7 @@ PRODUCT_PACKAGES += \
     camera.msm8226
 
 # Sensors: sensors.msm8226 wraps the stock HAL installed as
-# sensors.msm8226-vendor.so (sensors-wrapper/sensors_wrapper.c)
+# sensors.vendor.msm8226.so (sensors-wrapper/sensors_wrapper.c)
 PRODUCT_PACKAGES += \
     sensors.msm8226
 
