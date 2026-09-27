@@ -20,28 +20,41 @@
  * 0 -- SENSORS_DEVICE_API_VERSION_0_1, the oldest legacy value) and presents
  * it to M's SensorService.
  *
- * The vendor HAL's static sensor_t table sets name (four literal strings:
- * "BOSCH BMA250 3-axis Accelerometer", "CM36282 Light sensor", "CM36282
- * Proximity sensor", "HTC Gesture sensor") but never sets vendor -- no
- * vendor-name string appears anywhere in the blob's string table.
- * sizeof(struct sensor_t) is unchanged between this HAL's era and this
- * build's (the six fields M added -- fifoReservedEventCount,
- * fifoMaxEventCount, stringType, requiredPermission, maxDelay, flags --
- * occupy exactly the 32 bytes the original reserved[8] padding set aside),
- * and frameworks/native/libs/gui/Sensor.cpp's SENSORS_DEVICE_API_VERSION_0_1
- * guards correctly skip every one of those six fields; but
- * Sensor::Sensor(sensor_t const*) assigns hwSensor->name and hwSensor->vendor
- * to a String8 unconditionally, with no halVersion or null guard, and
- * String8(const char*) computes strlen(o) before checking anything, so a
- * null vendor SIGSEGVs at fault address 0 in SensorService's init thread on
- * every boot.
+ * The vendor HAL's static sensor_t table (read directly from its .data.rel.ro
+ * section: name, vendor, version, handle, type, in that order) carries four
+ * entries, all with a real, non-null name and vendor:
+ *
+ *   handle=0 type=1  (ACCELEROMETER)  "BOSCH BMA250 3-axis Accelerometer" / "BOSCH"
+ *   handle=1 type=8  (PROXIMITY)      "CM36282 Proximity sensor" / "Capella Microsystems"
+ *   handle=2 type=5  (LIGHT)          "CM36282 Light sensor" / "Capella Microsystems"
+ *   handle=3 type=21 (HEART_RATE!)    "HTC Gesture sensor" / "HTC"
+ *
+ * The fourth entry's type, 21, is frameworks/native/libs/gui/Sensor.h's
+ * SENSOR_TYPE_HEART_RATE -- a collision, not a capability: this HAL predates
+ * that constant (stringType and requiredPermission are both null, unlike a
+ * real M-era heart-rate sensor's HAL entry), and the Desire 510 has no heart
+ * rate hardware. frameworks/native/libs/gui/Sensor.cpp's
+ * SENSOR_TYPE_HEART_RATE case runs unconditionally on every HAL version --
+ * unlike every other case, it is not guarded by halVersion -- and
+ * unconditionally constructs an AppOpsManager and calls
+ * permissionToOpCode(), which SIGSEGVs at fault address 0 in SensorService's
+ * init thread on every boot: system_server's IPCThreadState/ProcessState
+ * binder plumbing is not yet ready this early in bring-up, before
+ * SystemServer's own binder thread pool starts.
  *
  * This module forwards the vendor HAL's device open()/close()/activate()/
  * setDelay()/poll() and set_operation_mode() untouched -- reporting the
- * vendor device's own version, not an invented one -- and only patches
- * get_sensors_list()'s returned array to supply a non-null vendor (and,
- * defensively, name) for each entry. It adds no capability the vendor HAL
- * does not already report.
+ * vendor device's own version, not an invented one -- and patches
+ * get_sensors_list()'s returned array in two ways: it remaps the "HTC
+ * Gesture sensor" entry's type from the colliding SENSOR_TYPE_HEART_RATE to
+ * SENSOR_TYPE_DEVICE_PRIVATE_BASE (sensors.h's own reserved range for a type
+ * Android does not define), which routes it through Sensor.cpp's default:
+ * case -- memory-safe for a null stringType/requiredPermission, and no
+ * AppOpsManager call -- without claiming it is any specific gesture this
+ * module cannot confirm; and it defends every entry's name/vendor against a
+ * future vendor blob revision leaving either null, though neither is null on
+ * the HAL this module wraps today. It adds no capability the vendor HAL does
+ * not already report.
  */
 
 #define LOG_TAG "SensorsWrapper"
@@ -130,6 +143,12 @@ static int sensors_get_sensors_list(struct sensors_module_t *module,
             patched_list[i].name = "unknown sensor";
         if (patched_list[i].vendor == NULL || patched_list[i].vendor[0] == '\0')
             patched_list[i].vendor = vendor_for_name(patched_list[i].name);
+        /* SENSOR_TYPE_HEART_RATE (21) is a numeric collision with this pre-M
+         * HAL's own "gesture" type, not a real capability (see the file
+         * header); Sensor.cpp's HEART_RATE case is the one case that is not
+         * halVersion-guarded, and it crashes unconditionally. */
+        if (patched_list[i].type == SENSOR_TYPE_HEART_RATE)
+            patched_list[i].type = SENSOR_TYPE_DEVICE_PRIVATE_BASE;
     }
 
     *list = patched_list;
