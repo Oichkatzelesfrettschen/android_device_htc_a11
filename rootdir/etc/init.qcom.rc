@@ -318,6 +318,16 @@ on boot
     # Our blobs expect the diag node to be called /dev/diag
     symlink /dev/htc_diag /dev/diag
 
+    # libOmxVdecHevc.so (registered as OMX.qcom.video.decoder.hevchybrid)
+    # hardcodes /dev/video/q6_dec: this kernel's msm-vidc driver
+    # (CONFIG_MSM_VIDC_V4L2=y) registers as a standard V4L2 /dev/videoN
+    # device instead, at video32 (VIDIOC_QUERYCAP: driver=msm_vidc_driver
+    # card=msm_vdec_8974). The msm8226-selected decoder
+    # (omx_vdec_msm8974.cpp, vdec.mk) already opens /dev/video32 directly
+    # and needs no symlink; only the HEVC hybrid library's fixed path does.
+    mkdir /dev/video 0755 root root
+    symlink /dev/video32 /dev/video/q6_dec
+
     #To allow interfaces to get v6 address when tethering is enabled
     write /proc/sys/net/ipv6/conf/rmnet0/accept_ra 2
     write /proc/sys/net/ipv6/conf/rmnet1/accept_ra 2
