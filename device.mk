@@ -94,6 +94,11 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     camera.msm8226
 
+# Sensors: sensors.msm8226 wraps the stock HAL installed as
+# sensors.vendor.msm8226.so (sensors-wrapper/sensors_wrapper.c)
+PRODUCT_PACKAGES += \
+    sensors.msm8226
+
 # Filesystem management tools
 PRODUCT_PACKAGES += \
     make_ext4fs \
