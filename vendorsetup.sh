@@ -1,2 +1,1 @@
-add_lunch_combo cm_a11-eng
-add_lunch_combo cm_a11-userdebug
+add_lunch_combo lineage_a11chl-userdebug

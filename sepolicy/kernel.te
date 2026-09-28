@@ -1,2 +1,0 @@
-allow kernel labeledfs:filesystem unmount;
-allow kernel vibe_dev:file relabelto;

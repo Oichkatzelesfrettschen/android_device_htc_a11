@@ -1,5 +1,5 @@
 PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/full_a11.mk \
-    $(LOCAL_DIR)/cm.mk \
-    $(LOCAL_DIR)/device.mk
+    $(LOCAL_DIR)/lineage_a11chl.mk
 
+COMMON_LUNCH_CHOICES := \
+    lineage_a11chl-userdebug
