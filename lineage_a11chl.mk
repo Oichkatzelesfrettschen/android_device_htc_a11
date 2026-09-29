@@ -23,7 +23,8 @@ PRODUCT_TARGET_VNDK_VERSION := 29
 
 # The a11chl product selects the Sprint CDMA/LTE blob family at build time.
 # CM13's variant script selected the same family for 0PCV10000/0PCV20000.
-PRODUCT_VENDOR_PROPERTIES += \
+# PRODUCT_PROPERTY_OVERRIDES is the Android 11 variable that writes vendor/build.prop.
+PRODUCT_PROPERTY_OVERRIDES += \
     ro.telephony.default_cdma_sub=1 \
     ro.telephony.default_network=8 \
     telephony.lteOnCdmaDevice=1 \
