@@ -6,6 +6,17 @@ $(call inherit-product, device/htc/msm8226-common/msm8226.mk)
 # The 512 MiB product uses one in-process Tethering APEX.
 PRODUCT_PACKAGES += com.android.tethering.a11chl
 
+# The multihal sensors service (android.hardware.sensors@1.0-service.htc8226)
+# reads /vendor/etc/sensors/_hals.conf and dlopens each sub-HAL listed there.
+# sensors.a11 is the wrapper that loads the HTC vendor sub-module
+# (sensors.vendor.msm8226.so, installed by a11chl-vendor.mk) and remaps its
+# type=21 gesture entry off the SENSOR_TYPE_HEART_RATE collision that otherwise
+# SIGSEGVs SensorService. Without both the wrapper and the conf, sensorservice
+# reports "No Sensors on the device".
+PRODUCT_PACKAGES += sensors.a11
+PRODUCT_COPY_FILES += \
+    device/htc/a11/sensors/_hals.conf:$(TARGET_COPY_OUT_VENDOR)/etc/sensors/_hals.conf
+
 PRODUCT_COPY_FILES += \
     device/htc/a11/rootdir/etc/fstab.a11chl:$(TARGET_COPY_OUT_RAMDISK)/fstab.qcom \
     device/htc/a11/rootdir/etc/fstab.a11chl:$(TARGET_COPY_OUT_VENDOR)/etc/fstab.qcom \
