@@ -1,0 +1,3 @@
+# The CM13 graphics stack needs access to KGSL and ION before SurfaceFlinger starts.
+/dev/kgsl-3d0 0666 system system
+/dev/ion 0664 system system

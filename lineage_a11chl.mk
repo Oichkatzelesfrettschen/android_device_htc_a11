@@ -3,9 +3,14 @@ $(call inherit-product, build/make/target/product/go_defaults.mk)
 $(call inherit-product, vendor/lineage/config/common_mini_go_phone.mk)
 $(call inherit-product, device/htc/msm8226-common/msm8226.mk)
 
+# The 512 MiB product uses one in-process Tethering APEX.
+PRODUCT_PACKAGES += com.android.tethering.a11chl
+
 PRODUCT_COPY_FILES += \
+    device/htc/a11/rootdir/etc/fstab.a11chl:$(TARGET_COPY_OUT_RAMDISK)/fstab.qcom \
     device/htc/a11/rootdir/etc/fstab.a11chl:$(TARGET_COPY_OUT_VENDOR)/etc/fstab.qcom \
     device/htc/a11/init/init.a11chl.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.a11chl.rc \
+    device/htc/a11/rootdir/etc/ueventd.a11chl.rc:$(TARGET_COPY_OUT_VENDOR)/ueventd.rc \
     device/htc/a11/keylayout/device-keypad.kl:$(TARGET_COPY_OUT_SYSTEM)/usr/keylayout/device-keypad.kl
 
 PRODUCT_NAME := lineage_a11chl
