@@ -39,3 +39,29 @@ TARGET_RECOVERY_FSTAB := device/htc/a11/rootdir/etc/fstab.a11chl
 
 TARGET_SCREEN_HEIGHT := 854
 TARGET_SCREEN_WIDTH := 480
+
+# HTC vendor libraries import __htclog_init_mask from HTC's liblog, which the
+# Android 11 liblog does not define; liba11-legacy-radio.so does. The linker
+# loads the shim beside each listed library, by resolved path, in every process
+# that opens it. Executables that import the symbol directly keep their init
+# LD_PRELOAD.
+A11_HTCLOG_SHIM := /system/vendor/lib/liba11-legacy-radio.so
+A11_HTCLOG_LIBS := \
+    /system/vendor/lib/hw/sensors.vendor.msm8226.so \
+    /system/vendor/lib/libacdbloader.so \
+    /system/vendor/lib/libacdbrtac.so \
+    /system/vendor/lib/libadiertac.so \
+    /system/vendor/lib/libaudcal.so \
+    /system/vendor/lib/libbt-vendor.so \
+    /system/vendor/lib/libdiag.so \
+    /system/vendor/lib/libdsi_netctrl.so \
+    /system/vendor/lib/libdsutils.so \
+    /system/vendor/lib/libnetmgr.so \
+    /system/vendor/lib/libqcci_legacy.so \
+    /system/vendor/lib/libqdi.so \
+    /system/vendor/lib/libqdp.so \
+    /system/vendor/lib/libqmi_client_qmux.so \
+    /system/vendor/lib/libqmi_csi.so \
+    /system/vendor/lib/libqmi.so \
+    /system/vendor/lib/libril-qc-qmi-1.so
+TARGET_LD_SHIM_LIBS += $(foreach lib,$(A11_HTCLOG_LIBS),$(lib)|$(A11_HTCLOG_SHIM))
