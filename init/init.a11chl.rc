@@ -3,14 +3,81 @@ on fs
     mkdir /dev/usb-ffs 0770 shell shell
     mkdir /dev/usb-ffs/adb 0770 shell shell
     mount functionfs adb /dev/usb-ffs/adb uid=2000,gid=2000
+    setprop sys.usb.ffs.mounted 1
 
-on property:sys.usb.config=adb
+on property:sys.usb.config=adb && property:sys.usb.ffs.mounted=1
+    start adbd
     write /sys/devices/platform/android_usb/usb_function_switch 3
     write /sys/class/android_usb/android0/f_adb/on 1
     setprop sys.usb.state ${sys.usb.config}
 
 on property:sys.usb.config=none
     write /sys/devices/platform/android_usb/usb_function_switch 0
+    setprop sys.usb.state ${sys.usb.config}
+
+# usb_function_switch takes the HTC gadget function mask from htc_attr.c:
+# ADB 2, RNDIS 4, MTP 128, ACCESSORY 8192, AUDIO_SOURCE 131072, PTP 262144.
+# UsbDeviceManager selects these function strings; a string without a handler
+# leaves the gadget enumerated with no interfaces. The kernel has no MIDI
+# function, so no midi string is handled.
+on property:sys.usb.config=mtp
+    write /sys/devices/platform/android_usb/usb_function_switch 128
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=mtp,adb && property:sys.usb.ffs.mounted=1
+    start adbd
+    write /sys/devices/platform/android_usb/usb_function_switch 130
+    write /sys/class/android_usb/android0/f_adb/on 1
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=ptp
+    write /sys/devices/platform/android_usb/usb_function_switch 262144
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=ptp,adb && property:sys.usb.ffs.mounted=1
+    start adbd
+    write /sys/devices/platform/android_usb/usb_function_switch 262146
+    write /sys/class/android_usb/android0/f_adb/on 1
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=rndis
+    write /sys/devices/platform/android_usb/usb_function_switch 4
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=rndis,adb && property:sys.usb.ffs.mounted=1
+    start adbd
+    write /sys/devices/platform/android_usb/usb_function_switch 6
+    write /sys/class/android_usb/android0/f_adb/on 1
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=accessory
+    write /sys/devices/platform/android_usb/usb_function_switch 8192
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=accessory,adb && property:sys.usb.ffs.mounted=1
+    start adbd
+    write /sys/devices/platform/android_usb/usb_function_switch 8194
+    write /sys/class/android_usb/android0/f_adb/on 1
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=audio_source
+    write /sys/devices/platform/android_usb/usb_function_switch 131072
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=audio_source,adb && property:sys.usb.ffs.mounted=1
+    start adbd
+    write /sys/devices/platform/android_usb/usb_function_switch 131074
+    write /sys/class/android_usb/android0/f_adb/on 1
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=accessory,audio_source
+    write /sys/devices/platform/android_usb/usb_function_switch 139264
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=accessory,audio_source,adb && property:sys.usb.ffs.mounted=1
+    start adbd
+    write /sys/devices/platform/android_usb/usb_function_switch 139266
+    write /sys/class/android_usb/android0/f_adb/on 1
     setprop sys.usb.state ${sys.usb.config}
 
 on post-fs-data
@@ -21,6 +88,10 @@ on post-fs-data
     mkdir /dev/socket/qmux_gps 0770 gps gps
 
 on boot
+    # cpu_boost holds every online CPU at input_boost_freq for input_boost_ms
+    # after a touch event; 1190400 kHz is the a11chl cpufreq table maximum.
+    write /sys/module/cpu_boost/parameters/input_boost_freq 1190400
+    write /sys/module/cpu_boost/parameters/input_boost_ms 40
     write /proc/sys/vm/swappiness 100
     write /proc/sys/vm/page-cluster 0
     write /sys/kernel/mm/ksm/run 0
