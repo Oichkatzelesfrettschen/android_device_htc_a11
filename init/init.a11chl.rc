@@ -1,11 +1,5 @@
 # The HTC composite gadget requires usb_function_switch after FunctionFS is mounted.
 on fs
-    mkdir /firmware 0771 system system
-    mkdir /firmware/radio 0771 system system
-    mkdir /firmware/adsp 0771 system system
-    mkdir /firmware/wcnss 0771 system system
-    mount_all /vendor/etc/fstab.qcom
-    swapon_all /vendor/etc/fstab.qcom
     mkdir /dev/usb-ffs 0770 shell shell
     mkdir /dev/usb-ffs/adb 0770 shell shell
     mount functionfs adb /dev/usb-ffs/adb uid=2000,gid=2000

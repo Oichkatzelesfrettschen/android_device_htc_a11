@@ -10,7 +10,6 @@ PRODUCT_COPY_FILES += \
     device/htc/a11/rootdir/etc/fstab.a11chl:$(TARGET_COPY_OUT_RAMDISK)/fstab.qcom \
     device/htc/a11/rootdir/etc/fstab.a11chl:$(TARGET_COPY_OUT_VENDOR)/etc/fstab.qcom \
     device/htc/a11/init/init.a11chl.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.a11chl.rc \
-    device/htc/a11/rootdir/etc/ueventd.a11chl.rc:$(TARGET_COPY_OUT_VENDOR)/ueventd.rc \
     device/htc/a11/keylayout/device-keypad.kl:$(TARGET_COPY_OUT_SYSTEM)/usr/keylayout/device-keypad.kl
 
 PRODUCT_NAME := lineage_a11chl
