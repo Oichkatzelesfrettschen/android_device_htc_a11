@@ -13,6 +13,23 @@ PRODUCT_COPY_FILES += \
     device/htc/a11/keylayout/device-keypad.kl:$(TARGET_COPY_OUT_SYSTEM)/usr/keylayout/device-keypad.kl \
     device/htc/a11/idc/himax-touchscreen.idc:$(TARGET_COPY_OUT_SYSTEM)/usr/idc/himax-touchscreen.idc
 
+# The msm8226 audio HAL opens /vendor/etc/mixer_paths.xml and
+# /vendor/etc/audio_platform_info.xml by absolute path (msm8974/platform.c
+# MIXER_XML_PATH, platform_info.c PLATFORM_INFO_XML_PATH); the HIDL
+# audio policy service reads /vendor/etc/audio_policy_configuration.xml and
+# resolves its xi:include hrefs in the same directory; the effects factory
+# reads /vendor/etc/audio_effects.xml. The sound card is msm8226-tapan-snd-card.
+PRODUCT_COPY_FILES += \
+    device/htc/a11/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml \
+    device/htc/a11/audio/audio_effects.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects.xml \
+    device/htc/a11/audio/mixer_paths.xml:$(TARGET_COPY_OUT_VENDOR)/etc/mixer_paths.xml \
+    device/htc/a11/audio/audio_platform_info.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_platform_info.xml \
+    frameworks/av/services/audiopolicy/config/a2dp_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/a2dp_audio_policy_configuration.xml \
+    frameworks/av/services/audiopolicy/config/r_submix_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/r_submix_audio_policy_configuration.xml \
+    frameworks/av/services/audiopolicy/config/usb_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/usb_audio_policy_configuration.xml \
+    frameworks/av/services/audiopolicy/config/audio_policy_volumes.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_volumes.xml \
+    frameworks/av/services/audiopolicy/config/default_volume_tables.xml:$(TARGET_COPY_OUT_VENDOR)/etc/default_volume_tables.xml
+
 # The built-in Pronto WLAN driver (prima 3.2.3.172) validates the configuration
 # download against its own cfg table, so the configuration files come from the
 # kernel tree that builds the driver.
