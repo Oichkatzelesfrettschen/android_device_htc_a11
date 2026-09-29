@@ -14,7 +14,6 @@
                 <item>Built-In Mic</item>
                 <item>Voice Call In</item>
                 <item>FM Tuner</item>
-                <item>Telephony Rx</item>
             </attachedDevices>
             <defaultOutputDevice>Speaker</defaultOutputDevice>
             <mixPorts>
@@ -119,7 +118,6 @@
                 <devicePort tagName="Proxy In" type="AUDIO_DEVICE_IN_PROXY" role="source"/>
                 <devicePort tagName="FM Tuner" type="AUDIO_DEVICE_IN_FM_TUNER" role="source"/>
                 <devicePort tagName="Analog Dock Headset In" type="AUDIO_DEVICE_IN_ANLG_DOCK_HEADSET" role="source"/>
-                <devicePort tagName="Telephony Rx" type="AUDIO_DEVICE_IN_TELEPHONY_RX" role="source"/>
             </devicePorts>
             <routes>
                 <route type="mix" sink="Earpiece" sources="primary output,compress_offload,voip_rx"/>
