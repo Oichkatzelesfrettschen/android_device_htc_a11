@@ -15,6 +15,71 @@ on property:sys.usb.config=none
     write /sys/devices/platform/android_usb/usb_function_switch 0
     setprop sys.usb.state ${sys.usb.config}
 
+# usb_function_switch takes the HTC gadget function mask from htc_attr.c:
+# ADB 2, RNDIS 4, MTP 128, ACCESSORY 8192, AUDIO_SOURCE 131072, PTP 262144.
+# UsbDeviceManager selects these function strings; a string without a handler
+# leaves the gadget enumerated with no interfaces. The kernel has no MIDI
+# function, so no midi string is handled.
+on property:sys.usb.config=mtp
+    write /sys/devices/platform/android_usb/usb_function_switch 128
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=mtp,adb && property:sys.usb.ffs.mounted=1
+    start adbd
+    write /sys/devices/platform/android_usb/usb_function_switch 130
+    write /sys/class/android_usb/android0/f_adb/on 1
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=ptp
+    write /sys/devices/platform/android_usb/usb_function_switch 262144
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=ptp,adb && property:sys.usb.ffs.mounted=1
+    start adbd
+    write /sys/devices/platform/android_usb/usb_function_switch 262146
+    write /sys/class/android_usb/android0/f_adb/on 1
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=rndis
+    write /sys/devices/platform/android_usb/usb_function_switch 4
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=rndis,adb && property:sys.usb.ffs.mounted=1
+    start adbd
+    write /sys/devices/platform/android_usb/usb_function_switch 6
+    write /sys/class/android_usb/android0/f_adb/on 1
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=accessory
+    write /sys/devices/platform/android_usb/usb_function_switch 8192
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=accessory,adb && property:sys.usb.ffs.mounted=1
+    start adbd
+    write /sys/devices/platform/android_usb/usb_function_switch 8194
+    write /sys/class/android_usb/android0/f_adb/on 1
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=audio_source
+    write /sys/devices/platform/android_usb/usb_function_switch 131072
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=audio_source,adb && property:sys.usb.ffs.mounted=1
+    start adbd
+    write /sys/devices/platform/android_usb/usb_function_switch 131074
+    write /sys/class/android_usb/android0/f_adb/on 1
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=accessory,audio_source
+    write /sys/devices/platform/android_usb/usb_function_switch 139264
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=accessory,audio_source,adb && property:sys.usb.ffs.mounted=1
+    start adbd
+    write /sys/devices/platform/android_usb/usb_function_switch 139266
+    write /sys/class/android_usb/android0/f_adb/on 1
+    setprop sys.usb.state ${sys.usb.config}
+
 on post-fs-data
     mkdir /data/vendor/radio 0770 radio radio
     mkdir /dev/socket/qmux_radio 0770 radio radio
