@@ -16,7 +16,11 @@ TARGET_OTA_ASSERT_DEVICE := a11chl
 TARGET_KERNEL_SOURCE := kernel/htc/a11
 TARGET_KERNEL_CONFIG := cyanogenmod_a11ul_defconfig
 BOARD_KERNEL_IMAGE_NAME := zImage
-BOARD_KERNEL_CMDLINE := console=ttyHSL0,115200,n8 androidboot.hardware=qcom user_debug=31 ehci-hcd.park=3 zcache androidboot.bootdevice=msm_sdcc.1 androidboot.selinux=permissive androidboot.init_fatal_panic=true
+# HBOOT 3.19 appends about 840 bytes of its own arguments and refuses to boot
+# when the result exceeds 1024 bytes ("bootargs out of size"). This line plus
+# the build's " buildvariant=<variant>" must stay within 170 bytes; the
+# bring-up job checks the packed boot.img cmdline against that budget.
+BOARD_KERNEL_CMDLINE := androidboot.hardware=qcom androidboot.bootdevice=msm_sdcc.1 androidboot.selinux=permissive androidboot.init_fatal_panic=true
 BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_PAGESIZE := 2048
 BOARD_KERNEL_SEPARATED_DT := true
