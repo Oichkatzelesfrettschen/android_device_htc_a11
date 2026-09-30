@@ -72,3 +72,13 @@ PRODUCT_PROPERTY_OVERRIDES += \
     telephony.lteOnCdmaDevice=1 \
     ril.subscription.types=NV,RUIM \
     ro.ril.set.mtusize=1422
+
+# The HTC bootloader passes the Bluetooth address to the htc_bdaddress kernel
+# module, which exports it as a 17-character colon-separated string; the
+# Bluetooth HAL reads its address from the file ro.bt.bdaddr_path names and
+# aborts with "No Bluetooth Address!" without one. libbt-vendor selects the
+# WCNSS SMD transport (/dev/smd3 commands, /dev/smd2 ACL) from
+# ro.qualcomm.bt.hci_transport.
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.bt.bdaddr_path=/sys/module/htc_bdaddress/parameters/bdaddress \
+    ro.qualcomm.bt.hci_transport=smd
