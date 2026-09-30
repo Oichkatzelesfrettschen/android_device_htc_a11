@@ -1,0 +1,24 @@
+// sensors.a11 wraps the HTC HAL1 vendor sub-module (sensors.vendor.msm8226.so)
+// and remaps its type=21 "HTC Gesture sensor" entry off the
+// SENSOR_TYPE_HEART_RATE collision that crashes SensorService. The multihal
+// service (android.hardware.sensors@1.0-service.htc8226) loads this .so by the
+// path in /vendor/etc/sensors/_hals.conf; the wrapper in turn resolves the
+// vendor blob through hw_get_module_by_class("sensors", "vendor"). See
+// sensors_wrapper.c for the fault and the remap.
+cc_library_shared {
+    name: "sensors.a11",
+    vendor: true,
+    relative_install_path: "hw",
+    srcs: ["sensors_wrapper.c"],
+    header_libs: ["libhardware_headers"],
+    shared_libs: [
+        "libhardware",
+        "liblog",
+        "libcutils",
+    ],
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+    ],
+}
