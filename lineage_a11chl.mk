@@ -95,3 +95,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.bt.bdaddr_path=/sys/module/htc_bdaddress/parameters/bdaddress \
     ro.qualcomm.bt.hci_transport=smd
+
+# Resource overlays
+DEVICE_PACKAGE_OVERLAYS += device/htc/a11/overlay
