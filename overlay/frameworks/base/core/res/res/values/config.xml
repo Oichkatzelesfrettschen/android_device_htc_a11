@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     The Desire 510 front panel carries no capacitive or hardware navigation
+     keys, so navigation depends on the on-screen bar. The framework default
+     of false leaves the phone with no Back, Home, or Recents input and
+     hides the System navigation setting.
+-->
+<resources>
+    <bool name="config_showNavigationBar">true</bool>
+</resources>
