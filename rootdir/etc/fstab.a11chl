@@ -10,4 +10,5 @@
 /devices/msm_sdcc.2/mmc_host* auto auto nosuid,nodev voldmanaged=sdcard1:auto
 # Linux 3.4 zram has one compression stream and no max_comp_streams attribute;
 # max_comp_streams=-1 stops fs_mgr from requiring it before it writes disksize.
-/dev/block/zram0 none swap defaults zramsize=402653184,max_comp_streams=-1
+# 512 MiB gives anonymous reclaim headroom; zram allocates backing RAM on demand.
+/dev/block/zram0 none swap defaults zramsize=536870912,max_comp_streams=-1

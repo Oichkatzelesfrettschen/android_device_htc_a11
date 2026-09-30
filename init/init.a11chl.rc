@@ -92,6 +92,13 @@ on boot
     # after a touch event; 1190400 kHz is the a11chl cpufreq table maximum.
     write /sys/module/cpu_boost/parameters/input_boost_freq 1190400
     write /sys/module/cpu_boost/parameters/input_boost_ms 40
+    # Linux 3.4 caps swappiness at 100: give anonymous and file reclaim equal
+    # priority so cold anonymous pages can use zram before kernel LMK kills.
     write /proc/sys/vm/swappiness 100
+    # zram has no seek latency; swap one page without speculative readahead.
     write /proc/sys/vm/page-cluster 0
+    # Start writeback at 4 MiB and throttle at 16 MiB to bound dirty-page
+    # bursts on eMMC rather than scaling the thresholds with total RAM.
+    write /proc/sys/vm/dirty_background_bytes 4194304
+    write /proc/sys/vm/dirty_bytes 16777216
     write /sys/kernel/mm/ksm/run 0

@@ -7,4 +7,8 @@
 -->
 <resources>
     <bool name="config_showNavigationBar">true</bool>
+    <!-- ProcessList scales all six kernel LMK thresholds from the highest
+         bucket. Reducing the cached-app threshold from 180 to 96 MiB gives
+         reclaim more room before foreground kills on 830 MiB. -->
+    <integer name="config_lowMemoryKillerMinFreeKbytesAbsolute">98304</integer>
 </resources>
