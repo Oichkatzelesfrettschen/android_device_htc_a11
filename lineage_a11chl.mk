@@ -48,6 +48,19 @@ PRODUCT_COPY_FILES += \
     kernel/htc/a11/drivers/staging/prima/firmware_bin/WCNSS_cfg.dat:$(TARGET_COPY_OUT_SYSTEM)/etc/firmware/wlan/prima/WCNSS_cfg.dat \
     kernel/htc/a11/drivers/staging/prima/firmware_bin/WCNSS_qcom_cfg.ini:$(TARGET_COPY_OUT_SYSTEM)/etc/firmware/wlan/prima/WCNSS_qcom_cfg.ini
 
+# microG Services 0.3.17.252432 and Companion 0.3.17.40226 (github.com/microg/GmsCore
+# release v0.3.17.252432) install byte-for-byte from prebuilt/microg/Android.mk
+# as privileged apps. The release signature (SHA-256 9bd06727...4165) is the
+# certificate PackageManagerService.isMicrogSigned matches before it spoofs the
+# Google signature, and a raw copy keeps the APK v2 signature block. Enforce
+# mode requires the privapp allowlist entries for their signature|privileged
+# permissions.
+PRODUCT_PACKAGES += \
+    GmsCore \
+    FakeStore \
+    privapp-permissions-microg.xml \
+    default-permissions-microg.xml
+
 PRODUCT_NAME := lineage_a11chl
 PRODUCT_DEVICE := a11chl
 PRODUCT_BRAND := htc

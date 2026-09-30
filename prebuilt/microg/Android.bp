@@ -1,0 +1,15 @@
+// ro.control_privapp_permissions=enforce rejects every signature|privileged
+// permission a priv-app requests without an entry here.
+prebuilt_etc {
+    name: "privapp-permissions-microg.xml",
+    src: "privapp-permissions-microg.xml",
+    sub_dir: "permissions",
+    filename_from_src: true,
+}
+
+prebuilt_etc {
+    name: "default-permissions-microg.xml",
+    src: "default-permissions-microg.xml",
+    sub_dir: "default-permissions",
+    filename_from_src: true,
+}
