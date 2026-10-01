@@ -9,6 +9,17 @@ TARGET_CPU_ABI2 := armeabi
 TARGET_CPU_VARIANT := cortex-a7
 TARGET_CPU_VARIANT_RUNTIME := cortex-a7
 
+# The HTC camera load group contains text relocations. The non-Treble
+# passthrough provider loads HAL1 inside cameraserver, rather than mediaserver.
+TARGET_PROCESS_SDK_VERSION_OVERRIDE += \
+    /system/bin/cameraserver=22 \
+    /system/vendor/bin/mm-qcamera-daemon=22
+
+# dex_preopt_config.mk and dexpreopt.go omit compressed OAT debug metadata
+# when false, reducing installed boot and app artifacts at the cost of native
+# symbolization detail for compiled Java code on the low-RAM product.
+WITH_DEXPREOPT_DEBUG_INFO := false
+
 TARGET_BOOTLOADER_BOARD_NAME := MSM8226
 TARGET_NO_BOOTLOADER := true
 TARGET_OTA_ASSERT_DEVICE := a11chl
@@ -20,7 +31,7 @@ BOARD_KERNEL_IMAGE_NAME := zImage
 # when the result exceeds 1024 bytes ("bootargs out of size"). This line plus
 # the build's " buildvariant=<variant>" must stay within 170 bytes; the
 # bring-up job checks the packed boot.img cmdline against that budget.
-BOARD_KERNEL_CMDLINE := androidboot.hardware=qcom androidboot.bootdevice=msm_sdcc.1 androidboot.selinux=permissive androidboot.init_fatal_panic=true
+BOARD_KERNEL_CMDLINE := androidboot.hardware=qcom androidboot.bootdevice=msm_sdcc.1 androidboot.init_fatal_panic=true
 BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_PAGESIZE := 2048
 BOARD_KERNEL_SEPARATED_DT := true
@@ -65,3 +76,77 @@ A11_HTCLOG_LIBS := \
     /system/vendor/lib/libqmi.so \
     /system/vendor/lib/libril-qc-qmi-1.so
 TARGET_LD_SHIM_LIBS += $(foreach lib,$(A11_HTCLOG_LIBS),$(lib)|$(A11_HTCLOG_SHIM))
+
+# Unique legacy imports bind to the camera ABI adapter without interposing
+# Android 11's SensorManager or GraphicBuffer implementations.
+TARGET_LD_SHIM_LIBS += \
+    /system/vendor/lib/hw/camera.vendor.msm8226.so|/system/lib/liba11-camera-abi.so \
+    /system/vendor/lib/libBeautyChat.so|/system/lib/liba11-camera-abi.so \
+    /system/vendor/lib/libcamera_af.so|/system/lib/liba11-camera-abi.so \
+    /system/vendor/lib/libcameraface.so|/system/lib/liba11-camera-abi.so \
+    /system/vendor/lib/libmmqjpeg_codec.so|/system/lib/liba11-camera-abi.so \
+    /system/vendor/lib/libposteffect.so|/system/lib/liba11-camera-abi.so \
+    /system/vendor/lib/hw/camera.vendor.msm8226.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libmm-qcamera.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libmmjpeg_interface.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libtuning_aec_s5k5e2_twolane_hdr.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libtuning_aec_s5k5e2_twolane_hdr_16_9.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libtuning_aec_s5k5e2_twolane_video.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libtuning_aec_s5k5e2_twolane_videoHFR.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libtuning_aec_s5k5e2_twolane_video_16_9.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libtuning_aec_s5k5e2_twolane_video_60fps.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libtuning_aec_s5k5e2_twolane_zsl.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libtuning_aec_s5k5e2_twolane_zsl_16_9.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libtuning_aec_s5k6a1gx_hdr.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libtuning_aec_s5k6a1gx_video.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libtuning_aec_s5k6a1gx_zsl.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libtuning_awb_s5k5e2_twolane.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libtuning_awb_s5k6a1gx.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libBeautyChat.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libawb_calibration.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libcamera_aec.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libcamera_af.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libcamera_awb.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libcameraface.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libcamerapp.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libchromatix_s5k5e2_twolane_default_video.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libchromatix_s5k5e2_twolane_hdr.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libchromatix_s5k5e2_twolane_hfr_common.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libchromatix_s5k5e2_twolane_preview.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libchromatix_s5k5e2_twolane_video_16_9.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libchromatix_s5k6a1gx_common.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libchromatix_s5k6a1gx_default_video.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libchromatix_s5k6a1gx_hdr.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libchromatix_s5k6a1gx_preview.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libjpegdhw.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libjpegehw.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libmmcamera2_c2d_module.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libmmcamera2_cpp_module.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libmmcamera2_iface_modules.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libmmcamera2_imglib_modules.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libmmcamera2_isp_modules.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libmmcamera2_pproc_modules.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libmmcamera2_sensor_modules.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libmmcamera2_stats_algorithm.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libmmcamera2_stats_modules.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libmmcamera2_vpe_module.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libmmcamera_imglib.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libmmcamera_interface.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libmmcamera_ofilm_oty5f03_eeprom.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libmmcamera_s5k6a1gx.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libmmcamera_sunny_p12v01m_eeprom.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libmmcamera_sunny_p5v23c_eeprom.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libmmcamera_sunny_q8v18a_eeprom.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libmmcamera_truly_cm7700_eeprom.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libmmcamera_tuning.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libmmjpeg.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libmmqjpeg_codec.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/liboemcamera.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libposteffect.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libqomx_core.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libqomx_jpegdec.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libqomx_jpegenc.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libtuning_aec.so|/system/vendor/lib/liba11-legacy-radio.so \
+    /system/vendor/lib/libtuning_af.so|/system/vendor/lib/liba11-legacy-radio.so
+TARGET_LD_SHIM_LIBS += \
+    /system/vendor/lib/libthermalclient.so|$(A11_HTCLOG_SHIM)
