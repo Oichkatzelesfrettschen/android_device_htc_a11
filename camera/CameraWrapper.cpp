@@ -22,7 +22,8 @@
  * The vendor module declares CAMERA_MODULE_API_VERSION_1_0 and
  * CAMERA_DEVICE_API_VERSION_1_0 (its static hw_module_t template, copied into
  * HMI by a constructor). camera_device_ops_t and its callback typedefs are
- * unchanged between KitKat and Android 11, so every device op passes through. The
+ * unchanged between KitKat and Android 11. Allocation callbacks restore the
+ * framework cookie because QCameraStreamMemory supplies a stream object. The
  * module-level structures differ: Android 11's camera_module_t carries open_legacy,
  * set_torch_mode and init where KitKat's reserved[] sat, and Android 11's camera_info
  * appends resource_cost and the conflicting-device list after the four fields
@@ -48,11 +49,40 @@
 #include <hardware/camera.h>
 #include <hardware/hardware.h>
 
-/* Written once under gVendorModuleOnce and read-only afterwards; the device
- * ops keep no other shared state, so no lock spans the vendor's open. */
+/* Written once under gVendorModuleOnce and read-only afterwards. */
 static pthread_once_t gVendorModuleOnce = PTHREAD_ONCE_INIT;
 static camera_module_t *gVendorModule;
 static int gVendorModuleStatus;
+
+/* QCameraStreamMemory supplies its own object as the allocation cookie.
+ * Separate entry points recover the framework cookie for each camera. */
+static pthread_mutex_t gMemoryCallbackLock = PTHREAD_MUTEX_INITIALIZER;
+static struct {
+    bool opened;
+    camera_request_memory get_memory;
+    void *user;
+} gMemoryCallbacks[2];
+
+template <unsigned int CameraId>
+static camera_memory_t *camera_get_memory(int fd, size_t buf_size,
+        unsigned int num_bufs, void *user)
+{
+    (void)user;
+    pthread_mutex_lock(&gMemoryCallbackLock);
+    camera_request_memory get_memory = gMemoryCallbacks[CameraId].get_memory;
+    void *framework_user = gMemoryCallbacks[CameraId].user;
+    pthread_mutex_unlock(&gMemoryCallbackLock);
+    if (!get_memory)
+        return NULL;
+    return get_memory(fd, buf_size, num_bufs, framework_user);
+}
+
+static void clear_memory_callback(unsigned int camera_id)
+{
+    pthread_mutex_lock(&gMemoryCallbackLock);
+    memset(&gMemoryCallbacks[camera_id], 0, sizeof(gMemoryCallbacks[camera_id]));
+    pthread_mutex_unlock(&gMemoryCallbackLock);
+}
 
 static int camera_device_open(const hw_module_t *module, const char *name,
         hw_device_t **device);
@@ -165,8 +195,18 @@ static void camera_set_callbacks(struct camera_device *device,
 {
     if (!device)
         return;
+    wrapper_camera_device_t *wrapper_dev =
+            reinterpret_cast<wrapper_camera_device_t *>(device);
+    pthread_mutex_lock(&gMemoryCallbackLock);
+    gMemoryCallbacks[wrapper_dev->id].get_memory = get_memory;
+    gMemoryCallbacks[wrapper_dev->id].user = user;
+    pthread_mutex_unlock(&gMemoryCallbackLock);
+    camera_request_memory vendor_get_memory = NULL;
+    if (get_memory)
+        vendor_get_memory = wrapper_dev->id == 0 ? camera_get_memory<0> :
+                camera_get_memory<1>;
     VENDOR_CALL(device, set_callbacks, notify_cb, data_cb, data_cb_timestamp,
-            get_memory, user);
+            vendor_get_memory, user);
 }
 
 static void camera_enable_msg_type(struct camera_device *device,
@@ -340,7 +380,9 @@ static int camera_device_close(hw_device_t *device)
 
     wrapper_camera_device_t *wrapper_dev =
             reinterpret_cast<wrapper_camera_device_t *>(device);
+    /* Keep the allocation callback available through vendor shutdown. */
     int rv = wrapper_dev->vendor->common.close(&wrapper_dev->vendor->common);
+    clear_memory_callback(wrapper_dev->id);
     free(wrapper_dev->base.ops);
     free(wrapper_dev);
     return rv;
@@ -366,6 +408,9 @@ static int camera_device_open(const hw_module_t *module, const char *name,
                 name, num_cameras);
         return -EINVAL;
     }
+    if (camera_id >= static_cast<long>(sizeof(gMemoryCallbacks) /
+            sizeof(gMemoryCallbacks[0])))
+        return -EINVAL;
 
     wrapper_camera_device_t *camera_device = static_cast<wrapper_camera_device_t *>(
             calloc(1, sizeof(*camera_device)));
@@ -379,10 +424,20 @@ static int camera_device_open(const hw_module_t *module, const char *name,
     }
 
     camera_device->id = static_cast<int>(camera_id);
+    pthread_mutex_lock(&gMemoryCallbackLock);
+    if (gMemoryCallbacks[camera_id].opened) {
+        pthread_mutex_unlock(&gMemoryCallbackLock);
+        free(camera_device);
+        free(camera_ops);
+        return -EBUSY;
+    }
+    gMemoryCallbacks[camera_id].opened = true;
+    pthread_mutex_unlock(&gMemoryCallbackLock);
     int rv = gVendorModule->common.methods->open(
             reinterpret_cast<const hw_module_t *>(gVendorModule), name,
             reinterpret_cast<hw_device_t **>(&camera_device->vendor));
     if (rv) {
+        clear_memory_callback(camera_id);
         ALOGE("%s: vendor open of camera %ld failed: %d", __func__, camera_id, rv);
         free(camera_device);
         free(camera_ops);
