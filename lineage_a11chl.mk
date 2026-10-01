@@ -14,6 +14,12 @@ PRODUCT_PACKAGES += com.android.tethering.a11chl
 # SIGSEGVs SensorService. Without both the wrapper and the conf, sensorservice
 # reports "No Sensors on the device".
 PRODUCT_PACKAGES += sensors.a11
+PRODUCT_PACKAGES += \
+    camera.msm8226 \
+    liba11-camera-abi
+
+PRODUCT_COPY_FILES += \
+    device/htc/a11/configs/media_profiles.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_profiles_V1_0.xml
 PRODUCT_COPY_FILES += \
     device/htc/a11/sensors/_hals.conf:$(TARGET_COPY_OUT_VENDOR)/etc/sensors/_hals.conf
 
