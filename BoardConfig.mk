@@ -15,6 +15,11 @@ TARGET_PROCESS_SDK_VERSION_OVERRIDE += \
     /system/bin/cameraserver=22 \
     /system/vendor/bin/mm-qcamera-daemon=22
 
+# dex_preopt_config.mk and dexpreopt.go omit compressed OAT debug metadata
+# when false, reducing installed boot and app artifacts at the cost of native
+# symbolization detail for compiled Java code on the low-RAM product.
+WITH_DEXPREOPT_DEBUG_INFO := false
+
 TARGET_BOOTLOADER_BOARD_NAME := MSM8226
 TARGET_NO_BOOTLOADER := true
 TARGET_OTA_ASSERT_DEVICE := a11chl
