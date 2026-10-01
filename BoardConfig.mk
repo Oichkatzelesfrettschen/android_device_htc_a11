@@ -9,6 +9,11 @@ TARGET_CPU_ABI2 := armeabi
 TARGET_CPU_VARIANT := cortex-a7
 TARGET_CPU_VARIANT_RUNTIME := cortex-a7
 
+# dex_preopt_config.mk and dexpreopt.go omit compressed OAT debug metadata
+# when false, reducing installed boot and app artifacts at the cost of native
+# symbolization detail for compiled Java code on the low-RAM product.
+WITH_DEXPREOPT_DEBUG_INFO := false
+
 TARGET_BOOTLOADER_BOARD_NAME := MSM8226
 TARGET_NO_BOOTLOADER := true
 TARGET_OTA_ASSERT_DEVICE := a11chl
