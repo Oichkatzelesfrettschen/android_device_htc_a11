@@ -31,7 +31,7 @@ BOARD_KERNEL_IMAGE_NAME := zImage
 # when the result exceeds 1024 bytes ("bootargs out of size"). This line plus
 # the build's " buildvariant=<variant>" must stay within 170 bytes; the
 # bring-up job checks the packed boot.img cmdline against that budget.
-BOARD_KERNEL_CMDLINE := androidboot.hardware=qcom androidboot.bootdevice=msm_sdcc.1 androidboot.selinux=permissive androidboot.init_fatal_panic=true
+BOARD_KERNEL_CMDLINE := androidboot.hardware=qcom androidboot.bootdevice=msm_sdcc.1 androidboot.init_fatal_panic=true
 BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_PAGESIZE := 2048
 BOARD_KERNEL_SEPARATED_DT := true
