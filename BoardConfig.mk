@@ -53,11 +53,13 @@ TARGET_SCREEN_WIDTH := 480
 
 # HTC vendor libraries import __htclog_init_mask from HTC's liblog, which the
 # Android 11 liblog does not define; liba11-legacy-radio.so does. The linker
-# loads the shim beside each listed library, by resolved path, in every process
-# that opens it. Executables that import the symbol directly keep their init
-# LD_PRELOAD.
+# loads the shim beside each listed library or executable, matched by resolved
+# path, in every process that loads it; an executable's entry applies when the
+# linker starts it. hci_qcomm_init runs from the hciattach script, where the
+# service's LD_PRELOAD does not reach it.
 A11_HTCLOG_SHIM := /system/vendor/lib/liba11-legacy-radio.so
 A11_HTCLOG_LIBS := \
+    /system/vendor/bin/hci_qcomm_init \
     /system/vendor/lib/hw/sensors.vendor.msm8226.so \
     /system/vendor/lib/libacdbloader.so \
     /system/vendor/lib/libacdbrtac.so \
