@@ -81,8 +81,11 @@ PRODUCT_TARGET_VNDK_VERSION := 29
 # Network mode 11 is LTE only: the 0PCV1 front end carries LTE B25/B26/B41 and
 # CDMA, has no GSM or WCDMA path, and the Sprint CDMA network is decommissioned.
 # HTC rmt_storage serves the modem EFS only when ro.baseband.arch names an MSM
-# target; qcril brings up data calls through netmgrd.
+# target; qcril brings up data calls through netmgrd. The GNSS engine runs in
+# the modem, so persist.vendor.radio.start=1 starts rmt_storage, qmuxd, and
+# netmgrd on every boot; setting it to 0 keeps the modem down.
 PRODUCT_PROPERTY_OVERRIDES += \
+    persist.vendor.radio.start=1 \
     ro.baseband.arch=msm \
     ro.use_data_netmgrd=true \
     persist.data.netmgrd.qos.enable=true \
