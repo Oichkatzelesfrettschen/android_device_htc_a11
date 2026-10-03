@@ -152,3 +152,7 @@ TARGET_LD_SHIM_LIBS += \
     /system/vendor/lib/libtuning_af.so|/system/vendor/lib/liba11-legacy-radio.so
 TARGET_LD_SHIM_LIBS += \
     /system/vendor/lib/libthermalclient.so|$(A11_HTCLOG_SHIM)
+
+# The a11chl modem loads a generation 2 XTRA file's 168-hour window one
+# 1024-week GPS era early; libloc_eng counts that window as current.
+TARGET_XTRA_ACCEPT_WEEK_ERA_ALIAS := true
