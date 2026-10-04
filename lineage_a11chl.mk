@@ -84,6 +84,12 @@ PRODUCT_MANUFACTURER := HTC
 PRODUCT_MODEL := HTC Desire 510
 PRODUCT_SHIPPING_API_LEVEL := 19
 
+# The 480x854 panel reports 213 dpi; aapt2 keeps only hdpi bitmaps (the
+# closest bucket at or above it) in source-built APKs and framework-res, and
+# the framework scales them down at load.
+PRODUCT_AAPT_CONFIG := normal hdpi
+PRODUCT_AAPT_PREF_CONFIG := hdpi
+
 # The a11chl product selects the Sprint CDMA/LTE blob family at build time.
 # CM13's variant script selected the same family for 0PCV10000/0PCV20000.
 # PRODUCT_PROPERTY_OVERRIDES is the Android 11 variable that writes vendor/build.prop.
