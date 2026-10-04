@@ -11,4 +11,7 @@
          bucket. Reducing the cached-app threshold from 180 to 96 MiB gives
          reclaim more room before foreground kills on 830 MiB. -->
     <integer name="config_lowMemoryKillerMinFreeKbytesAbsolute">98304</integer>
+    <!-- The amber and green LEDs carry notifications, so their setting
+         offers an off switch. -->
+    <bool name="config_intrusiveNotificationLed">true</bool>
 </resources>

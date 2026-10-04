@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The amber and green LEDs carry both notification and battery state
+     through android.hardware.light@2.0-service.htc_msm8226, which maps any
+     color onto amber or green and blinks in hardware:
+     LIGHTS_RGB_NOTIFICATION_LED (1) + LIGHTS_RGB_BATTERY_LED (2) +
+     LIGHTS_PULSATING_LED (8) + LIGHTS_BATTERY_LED (64) = 75. Without
+     LIGHTS_BATTERY_LED the battery light service never drives the LED. -->
+<resources>
+    <integer name="config_deviceLightCapabilities">75</integer>
+</resources>
