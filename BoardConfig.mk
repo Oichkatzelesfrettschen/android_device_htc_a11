@@ -2,6 +2,8 @@ BOARD_VENDOR := htc
 
 include device/htc/msm8226-common/BoardConfigCommon.mk
 
+DEVICE_MANIFEST_FILE += device/htc/a11/bluetooth_audio_manifest.xml
+
 TARGET_ARCH := arm
 TARGET_ARCH_VARIANT := armv7-a-neon
 TARGET_CPU_ABI := armeabi-v7a

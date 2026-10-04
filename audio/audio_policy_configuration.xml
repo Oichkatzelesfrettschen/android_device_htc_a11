@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!-- Audio policy for the a11chl primary HAL (audio.primary.msm8226, HIDL audio 2.0).
      The module set, device set, profiles, and flags follow the CM13 audio_policy.conf.
-     Every module declared here has a built library in PRODUCT_PACKAGES
-     (msm8226.mk): primary, a2dp, r_submix, usb.
+     Every module declared here has a built library in PRODUCT_PACKAGES:
+     primary, r_submix and usb (msm8226.mk) and bluetooth (lineage_a11chl.mk,
+     audio.bluetooth.default, which streams A2DP through the
+     IBluetoothAudioProvidersFactory 2.0 session the Bluetooth stack opens).
      Included files sit beside this file in /vendor/etc. -->
 <audioPolicyConfiguration version="1.0" xmlns:xi="http://www.w3.org/2001/XInclude">
     <globalConfiguration speaker_drc_enabled="false"/>
@@ -94,7 +96,7 @@
             </routes>
         </module>
 
-        <xi:include href="a2dp_audio_policy_configuration.xml"/>
+        <xi:include href="bluetooth_audio_policy_configuration.xml"/>
         <xi:include href="r_submix_audio_policy_configuration.xml"/>
         <xi:include href="usb_audio_policy_configuration.xml"/>
     </modules>
