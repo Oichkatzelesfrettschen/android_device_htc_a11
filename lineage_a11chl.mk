@@ -127,5 +127,12 @@ ifneq ($(TARGET_BUILD_VARIANT),user)
 PRODUCT_PRODUCT_PROPERTIES += persist.sys.usb.config=adb
 endif
 
+# build/make lists ro.product.first_api_level as a vendor property, and
+# without split overrides it lands in system/build.prop, whose blacklist
+# drops it. ueventd parses /vendor/ueventd.rc, and with it the firmware
+# directories PIL loads mba, modem and adsp from, only when the launch API
+# level is 31 or lower, so product/etc/build.prop carries it.
+PRODUCT_PRODUCT_PROPERTIES += ro.product.first_api_level=$(PRODUCT_SHIPPING_API_LEVEL)
+
 # Resource overlays
 DEVICE_PACKAGE_OVERLAYS += device/htc/a11/overlay
