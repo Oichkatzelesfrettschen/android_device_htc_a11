@@ -119,5 +119,13 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.bt.bdaddr_path=/sys/module/htc_bdaddress/parameters/bdaddress \
     ro.qualcomm.bt.hci_transport=smd
 
+# post_process_props.py writes persist.sys.usb.config=adb only into the
+# build.prop whose ro.adb.secure is 0 (system) and none into vendor,
+# system_ext and product; init loads product last, so a debuggable build
+# names adb there as well and enumerates adb without a stored setting.
+ifneq ($(TARGET_BUILD_VARIANT),user)
+PRODUCT_PRODUCT_PROPERTIES += persist.sys.usb.config=adb
+endif
+
 # Resource overlays
 DEVICE_PACKAGE_OVERLAYS += device/htc/a11/overlay
