@@ -83,7 +83,6 @@ PRODUCT_BRAND := htc
 PRODUCT_MANUFACTURER := HTC
 PRODUCT_MODEL := HTC Desire 510
 PRODUCT_SHIPPING_API_LEVEL := 19
-PRODUCT_TARGET_VNDK_VERSION := 29
 
 # The a11chl product selects the Sprint CDMA/LTE blob family at build time.
 # CM13's variant script selected the same family for 0PCV10000/0PCV20000.
@@ -97,7 +96,6 @@ PRODUCT_TARGET_VNDK_VERSION := 29
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.vendor.radio.start=1 \
     ro.baseband.arch=msm \
-    ro.use_data_netmgrd=true \
     persist.data.netmgrd.qos.enable=true \
     ro.telephony.default_cdma_sub=1 \
     ro.telephony.default_network=11 \
