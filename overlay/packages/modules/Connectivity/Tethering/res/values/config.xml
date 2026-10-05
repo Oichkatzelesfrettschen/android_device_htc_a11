@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- BpfCoordinator offloads tethered traffic through the tether BPF maps;
+         Linux 3.4 has no bpf(2), so tethering forwards through iptables. -->
+    <bool translatable="false" name="config_tether_enable_bpf_offload">false</bool>
+</resources>

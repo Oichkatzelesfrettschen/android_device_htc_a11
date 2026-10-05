@@ -83,7 +83,12 @@ PRODUCT_BRAND := htc
 PRODUCT_MANUFACTURER := HTC
 PRODUCT_MODEL := HTC Desire 510
 PRODUCT_SHIPPING_API_LEVEL := 19
-PRODUCT_TARGET_VNDK_VERSION := 29
+
+# The 480x854 panel reports 213 dpi; aapt2 keeps only hdpi bitmaps (the
+# closest bucket at or above it) in source-built APKs and framework-res, and
+# the framework scales them down at load.
+PRODUCT_AAPT_CONFIG := normal hdpi
+PRODUCT_AAPT_PREF_CONFIG := hdpi
 
 # The a11chl product selects the Sprint CDMA/LTE blob family at build time.
 # CM13's variant script selected the same family for 0PCV10000/0PCV20000.
@@ -97,7 +102,6 @@ PRODUCT_TARGET_VNDK_VERSION := 29
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.vendor.radio.start=1 \
     ro.baseband.arch=msm \
-    ro.use_data_netmgrd=true \
     persist.data.netmgrd.qos.enable=true \
     ro.telephony.default_cdma_sub=1 \
     ro.telephony.default_network=11 \
@@ -114,6 +118,21 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.bt.bdaddr_path=/sys/module/htc_bdaddress/parameters/bdaddress \
     ro.qualcomm.bt.hci_transport=smd
+
+# post_process_props.py writes persist.sys.usb.config=adb only into the
+# build.prop whose ro.adb.secure is 0 (system) and none into vendor,
+# system_ext and product; init loads product last, so a debuggable build
+# names adb there as well and enumerates adb without a stored setting.
+ifneq ($(TARGET_BUILD_VARIANT),user)
+PRODUCT_PRODUCT_PROPERTIES += persist.sys.usb.config=adb
+endif
+
+# build/make lists ro.product.first_api_level as a vendor property, and
+# without split overrides it lands in system/build.prop, whose blacklist
+# drops it. ueventd parses /vendor/ueventd.rc, and with it the firmware
+# directories PIL loads mba, modem and adsp from, only when the launch API
+# level is 31 or lower, so product/etc/build.prop carries it.
+PRODUCT_PRODUCT_PROPERTIES += ro.product.first_api_level=$(PRODUCT_SHIPPING_API_LEVEL)
 
 # Resource overlays
 DEVICE_PACKAGE_OVERLAYS += device/htc/a11/overlay
