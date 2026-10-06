@@ -97,6 +97,13 @@ PRODUCT_SHIPPING_API_LEVEL := 19
 PRODUCT_AAPT_CONFIG := normal hdpi
 PRODUCT_AAPT_PREF_CONFIG := hdpi
 
+# PhoneGlobals initializes telephony, and TeleService registers the phone
+# and isub services, only when PackageManager reports FEATURE_TELEPHONY; the
+# CDMA/LTE modem with a UICC slot declares both the CDMA and GSM feature sets.
+PRODUCT_COPY_FILES += \
+    frameworks/native/data/etc/android.hardware.telephony.cdma.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.telephony.cdma.xml \
+    frameworks/native/data/etc/android.hardware.telephony.gsm.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.telephony.gsm.xml
+
 # The a11chl product selects the Sprint CDMA/LTE blob family at build time.
 # CM13's variant script selected the same family for 0PCV10000/0PCV20000.
 # PRODUCT_PROPERTY_OVERRIDES is the Android 11 variable that writes vendor/build.prop.
