@@ -17,7 +17,6 @@
 #include <sensor/SensorManager.h>
 #include <ui/GraphicBuffer.h>
 #include <utils/Mutex.h>
-#include <utils/String16.h>
 #include <utils/String8.h>
 
 using android::CameraParameters;
@@ -26,7 +25,6 @@ using android::Mutex;
 using android::Sensor;
 using android::SensorEventQueue;
 using android::SensorManager;
-using android::String16;
 using android::String8;
 using android::sp;
 
@@ -41,21 +39,33 @@ extern "C" {
 Mutex a11_sensor_lock(Mutex::PRIVATE);
 LegacySensorManager *a11_sensor_instance = nullptr;
 
+/* The HAL runs in the binderized camera provider, whose vendor domain
+ * cannot look up sensorservice, and SensorManager::getInstanceForPackage
+ * retries that lookup without end, which blocks camera open. The adapter
+ * holds no libsensor manager: a11_sensor_default answers null and
+ * a11_sensor_queue_create an empty queue. libcameraface's SensorListener
+ * returns from initialize() on an empty queue and skips enableSensor() and
+ * disableSensor() on a null sensor, so face detection runs without
+ * orientation input. */
 void *a11_sensor_manager_construct(LegacySensorManager *self)
 {
-    new (self) LegacySensorManager{
-        &SensorManager::getInstanceForPackage(String16(""))};
+    new (self) LegacySensorManager{nullptr};
+    ALOGW("SensorManager at %p: sensor events disabled", self);
     return self;
 }
 
 const Sensor *a11_sensor_default(LegacySensorManager *self, int type)
 {
-    return self->manager->getDefaultSensor(type);
+    return self->manager != nullptr ? self->manager->getDefaultSensor(type) : nullptr;
 }
 
 /* ARM's nontrivial sp return uses a hidden output pointer before this. */
 void a11_sensor_queue_create(sp<SensorEventQueue> *result, LegacySensorManager *self)
 {
+    if (self->manager == nullptr) {
+        new (result) sp<SensorEventQueue>();
+        return;
+    }
     new (result) sp<SensorEventQueue>(self->manager->createEventQueue(String8(""), 0));
 }
 
