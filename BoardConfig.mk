@@ -155,6 +155,12 @@ TARGET_LD_SHIM_LIBS += \
 TARGET_LD_SHIM_LIBS += \
     /system/vendor/lib/libthermalclient.so|$(A11_HTCLOG_SHIM)
 
+# The linker reads its shim list and per-process SDK overrides from the
+# bionic_linker soong config namespace (bionic/linker/Android.bp). The list
+# separator is ':' and each override is a space-separated path=sdk pair.
+$(call soong_config_set,bionic_linker,ld_shim_libs,$(subst $(space),:,$(strip $(TARGET_LD_SHIM_LIBS))))
+$(call soong_config_set,bionic_linker,process_sdk_version_overrides,$(strip $(TARGET_PROCESS_SDK_VERSION_OVERRIDE)))
+
 # The a11chl modem loads a generation 2 XTRA file's 168-hour window one
 # 1024-week GPS era early; libloc_eng counts that window as current.
 TARGET_XTRA_ACCEPT_WEEK_ERA_ALIAS := true
