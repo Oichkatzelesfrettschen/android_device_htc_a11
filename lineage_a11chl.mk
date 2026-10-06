@@ -74,6 +74,16 @@ PRODUCT_PACKAGES += \
     privapp-permissions-microg.xml \
     default-permissions-microg.xml
 
+# apexd mounts a decompressed .capex from /data through a dm-verity device,
+# and the 3.4 kernel builds no DM_VERITY, so every compressed APEX fails to
+# activate and bpfloader, finding no netbpfload in com.android.tethering,
+# reboots the device. Uncompressed APEXes mount from /system without verity.
+# updatable_apex.mk, inherited through full_base_telephony.mk above, sets
+# the variable true first, and the first inherited assignment of a
+# single-value product variable wins over msm8226.mk's false; this file's
+# own assignment wins over both.
+PRODUCT_COMPRESSED_APEX := false
+
 PRODUCT_NAME := lineage_a11chl
 PRODUCT_DEVICE := a11chl
 PRODUCT_BRAND := htc
