@@ -3,9 +3,6 @@ $(call inherit-product, build/make/target/product/go_defaults.mk)
 $(call inherit-product, vendor/lineage/config/common_mini_go_phone.mk)
 $(call inherit-product, device/htc/msm8226-common/msm8226.mk)
 
-# The 512 MiB product uses one in-process Tethering APEX.
-PRODUCT_PACKAGES += com.android.tethering.a11chl
-
 # The multihal sensors service (android.hardware.sensors@1.0-service.htc8226)
 # reads /vendor/etc/sensors/_hals.conf and dlopens each sub-HAL listed there.
 # sensors.a11 is the wrapper that loads the HTC vendor sub-module
