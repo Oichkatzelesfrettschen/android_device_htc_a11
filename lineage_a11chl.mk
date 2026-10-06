@@ -45,13 +45,13 @@ PRODUCT_COPY_FILES += \
     frameworks/av/services/audiopolicy/config/default_volume_tables.xml:$(TARGET_COPY_OUT_VENDOR)/etc/default_volume_tables.xml
 
 # A2DP audio: the Android 11 Bluetooth stack serves the source stream through
-# IBluetoothAudioProvidersFactory 2.0, which the audio HAL service registers
+# IBluetoothAudioProvidersFactory 2.1, which the audio HAL service registers
 # when the passthrough implementation is installed; audio.bluetooth.default is
 # the audio policy's "bluetooth" module on that session. The legacy
 # audio.a2dp.default module waits on /data/misc/bluedroid/.a2dp_ctrl, a
 # socket this stack never creates.
 PRODUCT_PACKAGES += \
-    android.hardware.bluetooth.audio@2.0-impl \
+    android.hardware.bluetooth.audio@2.1-impl \
     audio.bluetooth.default
 
 # The built-in Pronto WLAN driver (prima 3.2.3.172) validates the configuration
