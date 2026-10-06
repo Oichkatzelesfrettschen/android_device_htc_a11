@@ -93,8 +93,10 @@ PRODUCT_AAPT_PREF_CONFIG := hdpi
 # The a11chl product selects the Sprint CDMA/LTE blob family at build time.
 # CM13's variant script selected the same family for 0PCV10000/0PCV20000.
 # PRODUCT_PROPERTY_OVERRIDES is the Android 11 variable that writes vendor/build.prop.
-# Network mode 11 is LTE only: the 0PCV1 front end carries LTE B25/B26/B41 and
-# CDMA, has no GSM or WCDMA path, and the Sprint CDMA network is decommissioned.
+# Network mode 9 is LTE/GSM/WCDMA, matching the modem's NV_PREF_MODE 0x25 for
+# a SIM on a GSM-family LTE network. The 0PCV1 front end carries LTE
+# B25/B26/B41 and CDMA with no GSM or WCDMA path, so the modem scans LTE only;
+# B25 is a superset of B2, and the Sprint CDMA network is decommissioned.
 # HTC rmt_storage serves the modem EFS only when ro.baseband.arch names an MSM
 # target; qcril brings up data calls through netmgrd. The GNSS engine runs in
 # the modem, so persist.vendor.radio.start=1 starts rmt_storage, qmuxd, and
@@ -104,7 +106,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.baseband.arch=msm \
     persist.data.netmgrd.qos.enable=true \
     ro.telephony.default_cdma_sub=1 \
-    ro.telephony.default_network=11 \
+    ro.telephony.default_network=9 \
     telephony.lteOnCdmaDevice=1 \
     ril.subscription.types=NV,RUIM \
     ro.ril.set.mtusize=1422
