@@ -72,6 +72,7 @@ PRODUCT_PACKAGES += \
     GmsCore \
     FakeStore \
     privapp-permissions-microg.xml \
+    privapp-permissions-networkstack.xml \
     default-permissions-microg.xml
 
 # apexd mounts a decompressed .capex from /data through a dm-verity device,

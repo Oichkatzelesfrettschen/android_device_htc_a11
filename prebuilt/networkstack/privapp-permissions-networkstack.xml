@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<permissions>
+    <privapp-permissions package="com.android.networkstack.tethering">
+        <permission name="android.permission.MAINLINE_NETWORK_STACK" />
+    </privapp-permissions>
+</permissions>

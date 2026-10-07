@@ -1,0 +1,6 @@
+prebuilt_etc {
+    name: "privapp-permissions-networkstack.xml",
+    src: "privapp-permissions-networkstack.xml",
+    sub_dir: "permissions",
+    filename_from_src: true,
+}
