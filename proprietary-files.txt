@@ -232,7 +232,7 @@ vendor/lib/libqc-opt.so
 
 # Sensors
 bin/akmd
-lib/hw/sensors.msm8226.so
+lib/hw/sensors.msm8226.so:lib/hw/sensors.vendor.msm8226.so
 
 # Time
 bin/time_daemon

@@ -27,15 +27,18 @@ rm -rf $BASE/*
 if [ -f ../$DEVICE/proprietary-files.txt ]; then
   for FILE in `egrep -v '(^#|^$)' ../$DEVICE/proprietary-files.txt`; do
     FILE=`echo ${FILE[0]} | sed -e "s/^-//g"`
-    echo "Extracting /system/$FILE ..."
-    DIR=`dirname $FILE`
+    # SRC:DST installs the device file SRC under the vendor name DST.
+    SRCFILE=${FILE%%:*}
+    DSTFILE=${FILE#*:}
+    echo "Extracting /system/$SRCFILE ..."
+    DIR=`dirname $DSTFILE`
     if [ ! -d $BASE/$DIR ]; then
       mkdir -p $BASE/$DIR
     fi
     if [ "$SRC" = "adb" ]; then
-      adb pull /system/$FILE $BASE/$FILE
+      adb pull /system/$SRCFILE $BASE/$DSTFILE
     else
-      cp $SRC/system/$FILE $BASE/$FILE
+      cp $SRC/system/$SRCFILE $BASE/$DSTFILE
     fi
   done
 fi

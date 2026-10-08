@@ -33,7 +33,8 @@ COUNT=`expr $COUNT - $DISM`
 for FILE in `egrep -v '(^#|^$)' ../$DEVICE/proprietary-files.txt`; do
   COUNT=`expr $COUNT - 1`
   if [[ ! "$FILE" =~ ^-.* ]]; then
-    echo "        $OUTDIR/proprietary/$FILE:/system/$FILE$LINEEND" >> $MAKEFILE
+    DSTFILE=${FILE#*:}
+    echo "        $OUTDIR/proprietary/$DSTFILE:/system/$DSTFILE$LINEEND" >> $MAKEFILE
   fi
 done
 
