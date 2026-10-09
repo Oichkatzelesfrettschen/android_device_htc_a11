@@ -26,7 +26,12 @@
 <!-- IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                          -->
 <audio_platform_info>
     <acdb_ids>
-        <!-- empty -->
+        <!-- The stock calibration databases carry the dual-mic handset Tx
+             device 41 and none of the AEC/NS dual-mic variants (109, 110,
+             111) the HAL asks for under fluence. -->
+        <device name="SND_DEVICE_IN_HANDSET_DMIC_AEC" acdb_id="41" />
+        <device name="SND_DEVICE_IN_HANDSET_DMIC_NS" acdb_id="41" />
+        <device name="SND_DEVICE_IN_HANDSET_DMIC_AEC_NS" acdb_id="41" />
     </acdb_ids>
 
     <backend_names>
