@@ -125,6 +125,19 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ril.subscription.types=NV,RUIM \
     ro.ril.set.mtusize=1422
 
+# Dual-mic noise suppression. The HAL (msm8974/platform.c) reads
+# ro.vendor.audio.sdk.fluencetype once at init; "fluence" selects the
+# ADC1 + ADC3 endfire dual-mic paths (voice-dmic-ef, voice-rec-dmic-ef-fluence,
+# dmic-endfire) and ACDB device 41. voicecall and voicerec switch those paths
+# on; audiorec and speaker stay off because their devices need ACDB ids the
+# stock databases lack.
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.vendor.audio.sdk.fluencetype=fluence \
+    persist.vendor.audio.fluence.voicecall=true \
+    persist.vendor.audio.fluence.voicerec=true \
+    persist.vendor.audio.fluence.audiorec=false \
+    persist.vendor.audio.fluence.speaker=false
+
 # The HTC bootloader passes the Bluetooth address to the htc_bdaddress kernel
 # module, which exports it as a 17-character colon-separated string; the
 # Bluetooth HAL reads its address from the file ro.bt.bdaddr_path names and
