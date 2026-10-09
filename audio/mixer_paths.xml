@@ -25,10 +25,10 @@
      <ctl name="ADC3 Volume" value="12" />
      <ctl name="ADC4 Volume" value="12" />
      <ctl name="ADC5 Volume" value="12" />
-     <ctl name="DEC1 Volume" value="88" />
-     <ctl name="DEC2 Volume" value="88" />
-     <ctl name="DEC3 Volume" value="88" />
-     <ctl name="DEC4 Volume" value="88" />
+     <ctl name="DEC1 Volume" value="84" />
+     <ctl name="DEC2 Volume" value="84" />
+     <ctl name="DEC3 Volume" value="84" />
+     <ctl name="DEC4 Volume" value="84" />
      <ctl name="IIR1 INP1 Volume" value="84" />
      <ctl name="IIR1 INP2 Volume" value="84" />
      <ctl name="IIR1 INP3 Volume" value="84" />
