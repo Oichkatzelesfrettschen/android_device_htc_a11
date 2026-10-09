@@ -566,10 +566,14 @@
         minFrameHeight="144" maxFrameHeight="1088"
         minFrameRate="15" maxFrameRate="30" />
 
+    <!-- AAC capture is stereo at most: ADC1 and ADC3 are the two handset
+         microphones (dual-mic path), ADC2 the headset microphone. The audio
+         HAL accepts 1, 2 or 6 input channels and serves 6 only with SSR,
+         which the board leaves off. -->
     <AudioEncoderCap name="aac" enabled="true"
         minBitRate="8000" maxBitRate="192000"
         minSampleRate="8000" maxSampleRate="48000"
-        minChannels="1" maxChannels="6" />
+        minChannels="1" maxChannels="2" />
 
     <AudioEncoderCap name="amrwb" enabled="true"
         minBitRate="6600" maxBitRate="23850"
