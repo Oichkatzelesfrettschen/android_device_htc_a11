@@ -82,6 +82,15 @@ on property:sys.usb.config=accessory,audio_source,adb && property:vendor.usb.ffs
     write /sys/class/android_usb/android0/f_adb/on 1
     setprop sys.usb.state ${sys.usb.config}
 
+# The touch wake gestures register one wake_pwrkey input device when a switch
+# first rises above 0. The Himax touchscreen registers from its async i2c probe
+# during boot as /dev/input/event8; sys.boot_completed follows that probe and
+# the framework's input scan, so the wake_pwrkey device takes a later number.
+# Both switches stay at 1 for the life of the boot.
+on property:sys.boot_completed=1
+    write /sys/android_touch/sweep2wake 1
+    write /sys/android_touch/doubletap2wake 1
+
 on post-fs-data
     mkdir /data/vendor/radio 0770 radio radio
     mkdir /dev/socket/qmux_radio 0770 radio radio
