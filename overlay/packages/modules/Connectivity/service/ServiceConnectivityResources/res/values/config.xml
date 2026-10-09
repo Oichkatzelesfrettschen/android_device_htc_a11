@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- EthernetTracker tracks the interfaces that match this regex as
+         Ethernet client networks. The default "*" selects (usb|eth)\d+ on
+         Android 15, which includes usb0, the name the 3.4 RNDIS gadget gives
+         the tether netdev. A tracked usb0 holds the tether prefix on an
+         Ethernet network, which raises a prefix conflict in IpServer. Only
+         eth\d+ is tracked here, so a USB Ethernet dongle that enumerates as
+         usb0 is not claimed as a client network. -->
+    <string translatable="false" name="config_ethernet_iface_regex">eth\\d+</string>
+</resources>
