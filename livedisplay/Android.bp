@@ -1,0 +1,35 @@
+// SPDX-License-Identifier: Apache-2.0
+
+// The LiveDisplay HAL for the Desire 510 panel. It implements the sysfs
+// AdaptiveBacklight and DisplayColorCalibration classes that
+// hardware/lineage/livedisplay declares, against the cabc_level_ctl attribute
+// that htc_register_attrs() creates and the attributes that kcal_ctrl_probe()
+// creates on the kcal_ctrl platform device.
+cc_binary {
+    name: "vendor.lineage.livedisplay@2.0-service.a11",
+    defaults: ["hidl_defaults"],
+    vendor: true,
+    relative_install_path: "hw",
+    init_rc: ["vendor.lineage.livedisplay@2.0-service.a11.rc"],
+    vintf_fragments: ["vendor.lineage.livedisplay@2.0-service.a11.xml"],
+    srcs: [
+        "AdaptiveBacklight.cpp",
+        "DisplayColorCalibration.cpp",
+        "service.cpp",
+    ],
+    shared_libs: [
+        "libbase",
+        "libbinder",
+        "libhidlbase",
+        "libutils",
+        "vendor.lineage.livedisplay@2.0",
+    ],
+    header_libs: [
+        "vendor.lineage.livedisplay@2.0-sysfs-headers",
+    ],
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+    ],
+}

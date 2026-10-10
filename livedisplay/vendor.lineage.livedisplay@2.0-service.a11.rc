@@ -1,0 +1,14 @@
+# cabc_level_ctl (mdss_htc_util.c) and the kcal_ctrl attributes (kcal_ctrl.c)
+# are created 0644 for root; the service runs as system.
+on init
+    chown system system /sys/class/leds/lcd-backlight/cabc_level_ctl
+    chmod 0660 /sys/class/leds/lcd-backlight/cabc_level_ctl
+    chown system system /sys/devices/platform/kcal_ctrl.0/kcal
+    chmod 0660 /sys/devices/platform/kcal_ctrl.0/kcal
+    chown system system /sys/devices/platform/kcal_ctrl.0/kcal_ctrl
+    chmod 0660 /sys/devices/platform/kcal_ctrl.0/kcal_ctrl
+
+service vendor.livedisplay-hal-2-0-a11 /vendor/bin/hw/vendor.lineage.livedisplay@2.0-service.a11
+    class hal
+    user system
+    group system
