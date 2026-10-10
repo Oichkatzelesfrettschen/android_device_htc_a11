@@ -14,3 +14,9 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     device/htc/a11/thermal/thermal_info_config.json:$(TARGET_COPY_OUT_VENDOR)/etc/thermal_info_config.json \
     device/htc/a11/thermal/init.a11chl.thermal.rc:$(TARGET_COPY_OUT_SYSTEM)/etc/init/init.a11chl.thermal.rc
+
+# Vibrator: IVibrator over the qpnp-vibrator timed_output node, with amplitude
+# control on voltage_level (vibrator/). device/htc/msm8226-common installs no
+# vibrator service.
+PRODUCT_PACKAGES += \
+    android.hardware.vibrator-service.a11
