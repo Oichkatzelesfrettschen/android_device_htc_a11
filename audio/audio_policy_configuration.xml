@@ -62,6 +62,19 @@
                              samplingRates="16000"
                              channelMasks="AUDIO_CHANNEL_OUT_MONO"/>
                 </mixPort>
+                <!-- A DIRECT PCM stream opens compress device 20 (USECASE_AUDIO_DIRECT_PCM_OFFLOAD)
+                     and reaches the SLIM_0_RX backend at the rate and width of the stream.
+                     AUDIO_FORMAT_PCM_24_BIT_PACKED stays out: msm-compress-dsp sends the V2
+                     multichannel PCM block, which carries 24 bits in a 32-bit word. -->
+                <mixPort name="direct_pcm" role="source"
+                         flags="AUDIO_OUTPUT_FLAG_DIRECT">
+                    <profile name="" format="AUDIO_FORMAT_PCM_16_BIT"
+                             samplingRates="44100,48000,88200,96000,176400,192000"
+                             channelMasks="AUDIO_CHANNEL_OUT_STEREO"/>
+                    <profile name="" format="AUDIO_FORMAT_PCM_8_24_BIT"
+                             samplingRates="44100,48000,88200,96000,176400,192000"
+                             channelMasks="AUDIO_CHANNEL_OUT_STEREO"/>
+                </mixPort>
                 <mixPort name="voip_rx" role="source"
                          flags="AUDIO_OUTPUT_FLAG_DIRECT|AUDIO_OUTPUT_FLAG_VOIP_RX">
                     <profile name="" format="AUDIO_FORMAT_PCM_16_BIT"
@@ -100,8 +113,8 @@
             <routes>
                 <route type="mix" sink="Earpiece" sources="primary output,compress_offload,voip_rx"/>
                 <route type="mix" sink="Speaker" sources="primary output,compress_offload,voip_rx"/>
-                <route type="mix" sink="Wired Headset" sources="primary output,compress_offload,voip_rx"/>
-                <route type="mix" sink="Wired Headphones" sources="primary output,compress_offload,voip_rx"/>
+                <route type="mix" sink="Wired Headset" sources="primary output,compress_offload,voip_rx,direct_pcm"/>
+                <route type="mix" sink="Wired Headphones" sources="primary output,compress_offload,voip_rx,direct_pcm"/>
                 <route type="mix" sink="BT SCO" sources="primary output,compress_offload,voip_rx"/>
                 <route type="mix" sink="BT SCO Headset" sources="primary output,compress_offload,voip_rx"/>
                 <route type="mix" sink="BT SCO Car Kit" sources="primary output,compress_offload,voip_rx"/>
