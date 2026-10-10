@@ -11,6 +11,13 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.thermal-service.pixel
 
+# The service, libpixelstats and pixelatoms-cpp sit in the hardware/google/pixel
+# Soong namespace and pixel-power-ext-V1-ndk in hardware/google/interfaces; Make
+# resolves the package only when both namespaces are exported to the product.
+PRODUCT_SOONG_NAMESPACES += \
+    hardware/google/interfaces \
+    hardware/google/pixel
+
 PRODUCT_COPY_FILES += \
     device/htc/a11/thermal/thermal_info_config.json:$(TARGET_COPY_OUT_VENDOR)/etc/thermal_info_config.json \
     device/htc/a11/thermal/init.a11chl.thermal.rc:$(TARGET_COPY_OUT_SYSTEM)/etc/init/init.a11chl.thermal.rc
