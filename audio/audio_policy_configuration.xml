@@ -61,6 +61,15 @@
                     <profile name="" format="AUDIO_FORMAT_AMR_WB"
                              samplingRates="16000"
                              channelMasks="AUDIO_CHANNEL_OUT_MONO"/>
+                    <profile name="" format="AUDIO_FORMAT_AMR_WB_PLUS"
+                             samplingRates="8000,16000,32000,48000"
+                             channelMasks="AUDIO_CHANNEL_OUT_MONO,AUDIO_CHANNEL_OUT_STEREO"/>
+                    <profile name="" format="AUDIO_FORMAT_QCELP"
+                             samplingRates="8000"
+                             channelMasks="AUDIO_CHANNEL_OUT_MONO"/>
+                    <profile name="" format="AUDIO_FORMAT_EVRC"
+                             samplingRates="8000"
+                             channelMasks="AUDIO_CHANNEL_OUT_MONO"/>
                 </mixPort>
                 <!-- A DIRECT PCM stream opens compress device 20 (USECASE_AUDIO_DIRECT_PCM_OFFLOAD)
                      and reaches the SLIM_0_RX backend at the rate and width of the stream.
