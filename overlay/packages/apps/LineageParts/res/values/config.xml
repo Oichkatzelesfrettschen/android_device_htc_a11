@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Default action per touchscreen gesture, in the order the touch HAL lists
+     them: sweep to wake, then double tap to wake. Action 12 is the entry the
+     gesture list overlay below labels "Wake the screen"; any nonzero action
+     enables the kernel switch, so both gestures stay on until the user turns
+     them off. -->
+<resources>
+    <integer-array name="config_defaultTouchscreenGestureActions">
+        <item>12</item>
+        <item>12</item>
+    </integer-array>
+</resources>

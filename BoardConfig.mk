@@ -84,6 +84,14 @@ A11_HTCLOG_LIBS := \
     /system/vendor/lib/libril-qc-qmi-1.so
 TARGET_LD_SHIM_LIBS += $(foreach lib,$(A11_HTCLOG_LIBS),$(lib)|$(A11_HTCLOG_SHIM))
 
+# liblbs_core links libmdmdetect and libperipheral_client, both of which import
+# __htclog_init_mask; liblbs_core is dlopened by libloc_eng's LocDualContext and
+# by libgeofence, so the shim binds in the GNSS service process.
+A11_HTCLOG_LBS_LIBS := \
+    /system/vendor/lib/libmdmdetect.so \
+    /system/vendor/lib/libperipheral_client.so
+TARGET_LD_SHIM_LIBS += $(foreach lib,$(A11_HTCLOG_LBS_LIBS),$(lib)|$(A11_HTCLOG_SHIM))
+
 # Unique legacy imports bind to the camera ABI adapter without interposing
 # Android 11's SensorManager or GraphicBuffer implementations.
 TARGET_LD_SHIM_LIBS += \

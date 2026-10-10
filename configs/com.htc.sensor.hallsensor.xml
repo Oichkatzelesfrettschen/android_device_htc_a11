@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The board carries the AK8789 two-pole hall sensor that the kernel reports
+     as SW_LID from the AK8789_HALL_SENSOR input device. -->
+<permissions>
+    <feature name="com.htc.sensor.hallsensor" />
+</permissions>

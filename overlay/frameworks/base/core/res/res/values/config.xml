@@ -14,4 +14,9 @@
     <!-- The amber and green LEDs carry notifications, so their setting
          offers an off switch. -->
     <bool name="config_intrusiveNotificationLed">true</bool>
+    <!-- The Wi-Fi Display source needs Wi-Fi P2P with concurrent station and
+         P2P links, the r_submix audio module for system audio, and an H.264
+         encoder; the board carries the Venus encoder and the WCNSS Wi-Fi
+         Direct feature, and libmediaplayerservice links libstagefright_wfd. -->
+    <bool name="config_enableWifiDisplay">true</bool>
 </resources>
