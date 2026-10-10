@@ -59,6 +59,14 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     vendor.lineage.touch@1.0-service.htc_msm8226
 
+# Hall cover: the AK8789 hall sensor reports SW_LID, PhoneWindowManager turns
+# it into lineageos.intent.action.LID_STATE_CHANGED, and FlipFlap draws the
+# cover window from that broadcast.
+PRODUCT_PACKAGES += FlipFlap
+
+PRODUCT_COPY_FILES += \
+    device/htc/a11/configs/com.htc.sensor.hallsensor.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/com.htc.sensor.hallsensor.xml
+
 # The built-in Pronto WLAN driver (prima 3.2.3.172) validates the configuration
 # download against its own cfg table, so the configuration files come from the
 # kernel tree that builds the driver.
