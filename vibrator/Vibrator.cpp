@@ -72,8 +72,13 @@ ndk::ScopedAStatus Vibrator::off() {
     return ndk::ScopedAStatus::ok();
 }
 
+// The service reports no CAP_ON_CALLBACK, and the interface requires such a
+// service to reject an on() that carries a callback.
 ndk::ScopedAStatus Vibrator::on(int32_t timeoutMs,
-                                const std::shared_ptr<IVibratorCallback>& /*callback*/) {
+                                const std::shared_ptr<IVibratorCallback>& callback) {
+    if (callback != nullptr) {
+        return unsupported();
+    }
     if (timeoutMs <= 0) {
         return ndk::ScopedAStatus::fromExceptionCode(EX_ILLEGAL_ARGUMENT);
     }
@@ -94,8 +99,10 @@ ndk::ScopedAStatus Vibrator::perform(Effect /*effect*/, EffectStrength /*strengt
     return unsupported();
 }
 
-ndk::ScopedAStatus Vibrator::getSupportedEffects(std::vector<Effect>* /*_aidl_return*/) {
-    return unsupported();
+// The empty list is the complete answer: perform() rejects every effect.
+ndk::ScopedAStatus Vibrator::getSupportedEffects(std::vector<Effect>* _aidl_return) {
+    _aidl_return->clear();
+    return ndk::ScopedAStatus::ok();
 }
 
 // The amplitude spans the driver's 20 voltage levels. The framework changes the
