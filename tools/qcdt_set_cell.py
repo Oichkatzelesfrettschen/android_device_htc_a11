@@ -62,7 +62,7 @@ def find_cells(dtb: bytes, node_path: str, prop: str, index: int) -> list[int]:
             stop = dtb.index(b"\0", start)
             path = "/" + "/".join(part for part in stack if part)
             if path == node_path and dtb[start:stop] == want_name:
-                if length % 4 or index * 4 + 4 > length:
+                if length % 4 or index < 0 or index * 4 + 4 > length:
                     raise ValueError(
                         "%s %s is %d bytes, cell %d is out of range"
                         % (node_path, prop, length, index)
