@@ -74,6 +74,9 @@ PRODUCT_PACKAGES += \
     privapp-permissions-microg.xml \
     default-permissions-microg.xml
 
+# Vendor HAL services built from this tree: LiveDisplay, thermal and vibrator.
+$(call inherit-product, device/htc/a11/hal-services.mk)
+
 # apexd mounts a decompressed .capex from /data through a dm-verity device,
 # and the 3.4 kernel builds no DM_VERITY, so every compressed APEX fails to
 # activate and bpfloader, finding no netbpfload in com.android.tethering,
