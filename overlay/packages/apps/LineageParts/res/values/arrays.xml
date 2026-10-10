@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Himax wake gestures have one effect: the kernel injects KEY_POWER
+     while the screen is off. The action list therefore offers off and a wake
+     entry; value 12 is the id LineageParts keeps for its ambient-display
+     entry and only selects the enabled state. -->
+<resources>
+    <string-array name="touchscreen_gesture_action_entries" translatable="false">
+        <item>@string/touchscreen_gesture_action_do_nothing</item>
+        <item>Wake the screen</item>
+    </string-array>
+
+    <string-array name="touchscreen_gesture_action_values" translatable="false">
+        <item>0</item>
+        <item>12</item>
+    </string-array>
+</resources>

@@ -1,0 +1,5 @@
+service vendor.touch-hal-1-0-htc_msm8226 /vendor/bin/hw/vendor.lineage.touch@1.0-service.htc_msm8226
+    interface vendor.lineage.touch@1.0::ITouchscreenGesture default
+    class hal
+    user system
+    group system
