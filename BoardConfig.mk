@@ -72,6 +72,7 @@ A11_HTCLOG_LIBS := \
     /system/vendor/lib/libdsi_netctrl.so \
     /system/vendor/lib/libdsutils.so \
     /system/vendor/lib/libnetmgr.so \
+    /system/vendor/lib/libOmxAacDec.so \
     /system/vendor/lib/libOmxAmrwbplusDec.so \
     /system/vendor/lib/libOmxWmaDec.so \
     /system/vendor/lib/libqcci_legacy.so \
