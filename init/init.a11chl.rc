@@ -100,10 +100,13 @@ on property:sys.usb.config=accessory,audio_source,adb && property:vendor.usb.ffs
 # first rises above 0. The Himax touchscreen registers from its async i2c probe
 # during boot as /dev/input/event8; sys.boot_completed follows that probe and
 # the framework's input scan, so the wake_pwrkey device takes a later number.
-# Both switches stay at 1 for the life of the boot.
+# The switches exist once the probe has run and are mode 0644 root. The touch
+# gesture HAL (vendor.lineage.touch@1.0-service.htc_msm8226) writes them as
+# the system user when LineageParts restores the gesture settings after
+# ACTION_BOOT_COMPLETED, so the first write above 0 follows the numbering above.
 on property:sys.boot_completed=1
-    write /sys/android_touch/sweep2wake 1
-    write /sys/android_touch/doubletap2wake 1
+    chown system system /sys/android_touch/sweep2wake
+    chown system system /sys/android_touch/doubletap2wake
 
 on post-fs-data
     mkdir /data/vendor/radio 0770 radio radio

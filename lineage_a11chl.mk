@@ -54,6 +54,11 @@ PRODUCT_PACKAGES += \
     android.hardware.bluetooth.audio@2.1-impl \
     audio.bluetooth.default
 
+# Touchscreen gestures: the HAL maps the two Himax wake switches under
+# /sys/android_touch to the LineageParts touchscreen gesture settings.
+PRODUCT_PACKAGES += \
+    vendor.lineage.touch@1.0-service.htc_msm8226
+
 # The built-in Pronto WLAN driver (prima 3.2.3.172) validates the configuration
 # download against its own cfg table, so the configuration files come from the
 # kernel tree that builds the driver.
