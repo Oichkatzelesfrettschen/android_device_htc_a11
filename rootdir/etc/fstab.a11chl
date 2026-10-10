@@ -15,6 +15,11 @@
 # entry carries encryptable; the key is generated per volume, so /data stays
 # unencrypted.
 /devices/msm_sdcc.2/mmc_host* auto auto nosuid,nodev voldmanaged=sdcard1:auto,encryptable=userdata
+# msm_otg registers the host controller as the msm_hsusb_host platform device
+# (drivers/usb/otg/msm_otg.c, msm_otg_setup_devices), so an OTG mass-storage
+# disk sits below /devices/platform/msm_hsusb_host/usbN. vold matches the
+# pattern with fnmatch and without FNM_PATHNAME.
+/devices/platform/msm_hsusb_host/usb* auto auto nosuid,nodev voldmanaged=usb:auto
 # Linux 3.4 zram has one compression stream and no max_comp_streams attribute;
 # max_comp_streams=-1 stops fs_mgr from requiring it before it writes disksize.
 # 512 MiB gives anonymous reclaim headroom; zram allocates backing RAM on demand.
