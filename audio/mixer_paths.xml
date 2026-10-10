@@ -68,11 +68,13 @@
      <ctl name="HDMI Mixer MultiMedia3" value="0" />
      <ctl name="HDMI Mixer MultiMedia4" value="0" />
      <ctl name="HDMI Mixer MultiMedia5" value="0" />
+     <ctl name="HDMI Mixer MultiMedia6" value="0" />
      <ctl name="SLIMBUS_0_RX Audio Mixer MultiMedia1" value="0" />
      <ctl name="SLIMBUS_0_RX Audio Mixer MultiMedia2" value="0" />
      <ctl name="SLIMBUS_0_RX Audio Mixer MultiMedia3" value="0" />
      <ctl name="SLIMBUS_0_RX Audio Mixer MultiMedia4" value="0" />
      <ctl name="SLIMBUS_0_RX Audio Mixer MultiMedia5" value="0" />
+     <ctl name="SLIMBUS_0_RX Audio Mixer MultiMedia6" value="0" />
      <ctl name="IIR1 INP1 MUX" value="ZERO" />
      <ctl name="SLIM TX5 MUX" value="ZERO" />
      <ctl name="SLIM TX4 MUX" value="ZERO" />
@@ -111,6 +113,8 @@
      <ctl name="SLIMBUS_0_RX Audio Mixer MultiMedia4" value="0" />
      <ctl name="HDMI Mixer MultiMedia4" value="0" />
      <ctl name="SEC_AUX_PCM_RX Audio Mixer MultiMedia4" value="0" />
+     <ctl name="SLIMBUS_0_RX Audio Mixer MultiMedia6" value="0" />
+     <ctl name="HDMI Mixer MultiMedia6" value="0" />
      <!-- VoLTE -->
      <ctl name="SLIM_0_RX_Voice Mixer VoLTE" value="0" />
      <ctl name="VoLTE_Tx Mixer SLIM_0_TX_VoLTE" value="0" />
@@ -479,6 +483,45 @@
 
      <path name="compress-offload-playback headphones-srs">
           <ctl name="SLIMBUS_0_RX Audio Mixer MultiMedia4" value="1" />
+     </path>
+
+     <!-- compress-offload-playback2 is compress device 20 ("msm8226 Compr2"),
+          whose front end is MultiMedia6. -->
+     <path name="compress-offload-playback2">
+          <ctl name="SLIMBUS_0_RX Audio Mixer MultiMedia6" value="1" />
+     </path>
+
+     <path name="compress-offload-playback2 hdmi">
+          <ctl name="HDMI Mixer MultiMedia6" value="1" />
+     </path>
+
+     <path name="compress-offload-playback2 speaker">
+          <ctl name="SLIMBUS_0_RX Audio Mixer MultiMedia6" value="1" />
+     </path>
+
+     <path name="compress-offload-playback2 speaker-mute-left">
+          <ctl name="SLIMBUS_0_RX Audio Mixer MultiMedia6" value="1" />
+     </path>
+
+     <path name="compress-offload-playback2 speaker-headset">
+          <ctl name="SLIMBUS_0_RX Audio Mixer MultiMedia6" value="1" />
+     </path>
+
+     <path name="compress-offload-playback2 speaker-headset-mute-left">
+          <ctl name="SLIMBUS_0_RX Audio Mixer MultiMedia6" value="1" />
+     </path>
+
+     <path name="compress-offload-playback2 voice-speaker-and-headphones">
+          <ctl name="SLIMBUS_0_RX Audio Mixer MultiMedia6" value="1" />
+     </path>
+
+     <path name="compress-offload-playback2 speaker-and-hdmi">
+          <path name="compress-offload-playback2 hdmi" />
+          <path name="compress-offload-playback2 speaker" />
+     </path>
+
+     <path name="compress-offload-playback2 headphones-srs">
+          <ctl name="SLIMBUS_0_RX Audio Mixer MultiMedia6" value="1" />
      </path>
 
      <path name="voice-call voice-speaker">
