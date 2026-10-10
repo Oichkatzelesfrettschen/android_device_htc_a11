@@ -19,10 +19,9 @@ on property:sys.usb.config=none
 
 # usb_function_switch takes the HTC gadget function mask from htc_attr.c:
 # ADB 2, RNDIS 4, MTP 128, ACCESSORY 8192, AUDIO_SOURCE 131072, PTP 262144,
-# HID 524288.
+# HID 524288, MIDI 1048576.
 # UsbDeviceManager selects these function strings; a string without a handler
-# leaves the gadget enumerated with no interfaces. The kernel has no MIDI
-# function, so no midi string is handled.
+# leaves the gadget enumerated with no interfaces.
 on property:sys.usb.config=mtp
     write /sys/devices/platform/android_usb/usb_function_switch 128
     setprop sys.usb.state ${sys.usb.config}
@@ -40,6 +39,16 @@ on property:sys.usb.config=ptp
 on property:sys.usb.config=ptp,adb && property:vendor.usb.ffs.mounted=1
     start adbd
     write /sys/devices/platform/android_usb/usb_function_switch 262146
+    write /sys/class/android_usb/android0/f_adb/on 1
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=midi
+    write /sys/devices/platform/android_usb/usb_function_switch 1048576
+    setprop sys.usb.state ${sys.usb.config}
+
+on property:sys.usb.config=midi,adb && property:vendor.usb.ffs.mounted=1
+    start adbd
+    write /sys/devices/platform/android_usb/usb_function_switch 1048578
     write /sys/class/android_usb/android0/f_adb/on 1
     setprop sys.usb.state ${sys.usb.config}
 
@@ -100,10 +109,13 @@ on property:sys.usb.config=accessory,audio_source,adb && property:vendor.usb.ffs
 # first rises above 0. The Himax touchscreen registers from its async i2c probe
 # during boot as /dev/input/event8; sys.boot_completed follows that probe and
 # the framework's input scan, so the wake_pwrkey device takes a later number.
-# Both switches stay at 1 for the life of the boot.
+# The switches exist once the probe has run and are mode 0644 root. The touch
+# gesture HAL (vendor.lineage.touch@1.0-service.htc_msm8226) writes them as
+# the system user when LineageParts restores the gesture settings after
+# ACTION_BOOT_COMPLETED, so the first write above 0 follows the numbering above.
 on property:sys.boot_completed=1
-    write /sys/android_touch/sweep2wake 1
-    write /sys/android_touch/doubletap2wake 1
+    chown system system /sys/android_touch/sweep2wake
+    chown system system /sys/android_touch/doubletap2wake
 
 on post-fs-data
     mkdir /data/vendor/radio 0770 radio radio
