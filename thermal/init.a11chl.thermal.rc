@@ -1,0 +1,6 @@
+# android.hardware.thermal-service.pixel.rc leaves vendor.thermal-hal disabled
+# until vendor.thermal.link_ready is 1. The HAL reads /sys/devices/virtual/thermal
+# directly, and the built-in tsens and pm8226 temp-alarm drivers register their
+# zones before init runs, so the gate opens at boot.
+on boot
+    setprop vendor.thermal.link_ready 1

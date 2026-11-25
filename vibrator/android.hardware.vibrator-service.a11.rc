@@ -1,0 +1,11 @@
+# qpnp-vibrator.c creates enable and voltage_level 0644 for root; the service
+# runs as system.
+on init
+    chown system system /sys/class/timed_output/vibrator/enable
+    chown system system /sys/class/timed_output/vibrator/voltage_level
+    chmod 0660 /sys/class/timed_output/vibrator/voltage_level
+
+service vendor.vibrator-a11 /vendor/bin/hw/android.hardware.vibrator-service.a11
+    class hal
+    user system
+    group system

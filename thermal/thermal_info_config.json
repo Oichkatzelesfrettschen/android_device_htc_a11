@@ -1,0 +1,44 @@
+{
+    "Comment": "Desire 510 (MSM8926): tsens_tz_sensor0-5 read degrees C and pm8226_tz millidegrees C; the CPU ladder follows the msm_thermal trips.",
+    "Sensors": [
+        {
+            "Name": "tsens_tz_sensor0",
+            "Type": "UNKNOWN",
+            "Multiplier": 1.0
+        },
+        {
+            "Name": "tsens_tz_sensor1",
+            "Type": "CPU",
+            "HotThreshold": ["NAN", 72.0, 75.0, 90.0, 108.0, "NAN", 115.0],
+            "HotHysteresis": [0.0, 4.0, 3.0, 3.0, 4.0, 0.0, 0.0],
+            "Multiplier": 1.0
+        },
+        {
+            "Name": "tsens_tz_sensor2",
+            "Type": "UNKNOWN",
+            "Multiplier": 1.0
+        },
+        {
+            "Name": "tsens_tz_sensor3",
+            "Type": "UNKNOWN",
+            "Multiplier": 1.0
+        },
+        {
+            "Name": "tsens_tz_sensor4",
+            "Type": "UNKNOWN",
+            "Multiplier": 1.0
+        },
+        {
+            "Name": "tsens_tz_sensor5",
+            "Type": "CPU",
+            "HotThreshold": ["NAN", 72.0, 75.0, 90.0, 108.0, "NAN", 115.0],
+            "HotHysteresis": [0.0, 4.0, 3.0, 3.0, 4.0, 0.0, 0.0],
+            "Multiplier": 1.0
+        },
+        {
+            "Name": "pm8226_tz",
+            "Type": "UNKNOWN",
+            "Multiplier": 0.001
+        }
+    ]
+}

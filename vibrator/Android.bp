@@ -1,0 +1,25 @@
+// SPDX-License-Identifier: Apache-2.0
+
+// IVibrator with amplitude control for the qpnp-vibrator timed_output device:
+// enable carries the duration and voltage_level the amplitude.
+cc_binary {
+    name: "android.hardware.vibrator-service.a11",
+    vendor: true,
+    relative_install_path: "hw",
+    init_rc: ["android.hardware.vibrator-service.a11.rc"],
+    vintf_fragments: ["android.hardware.vibrator-service.a11.xml"],
+    srcs: [
+        "Vibrator.cpp",
+        "service.cpp",
+    ],
+    shared_libs: [
+        "libbase",
+        "libbinder_ndk",
+        "android.hardware.vibrator-V2-ndk",
+    ],
+    cflags: [
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+    ],
+}
